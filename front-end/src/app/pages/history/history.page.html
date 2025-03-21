@@ -1,0 +1,52 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Order History</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div *ngIf="orders.length === 0" class="ion-text-center ion-padding">
+    <p>No order history available.</p>
+  </div>
+
+  <div *ngIf="orders.length > 0" class="ion-padding">
+    <ion-card *ngFor="let order of orders">
+      <ion-card-header>
+        <ion-card-title>Order #{{ order.id }}</ion-card-title>
+        <p class="order-date">{{ order.createdAt | date:'medium' }}</p>
+      </ion-card-header>
+
+      <ion-card-content>
+        <ion-list lines="full">
+          <ion-item>
+            <div class="order-info-item">
+              <div class="label">Total</div>
+              <div class="value">{{ order.totalAmount | currency }}</div>
+            </div>
+          </ion-item>
+
+          <ion-item>
+            <div class="order-info-item">
+              <div class="label">Status</div>
+              <ion-badge [color]="getStatusColor(order.status)">
+                {{ order.status | titlecase }}
+              </ion-badge>
+            </div>
+          </ion-item>
+
+          <ion-item *ngFor="let product of order.products">
+            <div class="order-item">
+              <div class="product-info">
+                <h4>{{ product.name }}</h4>
+                <p>Quantity: {{ product.quantity }}</p>
+              </div>
+              <div class="product-price">{{ product.price | currency }}</div>
+            </div>
+          </ion-item>
+        </ion-list>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>
+
+<app-footer></app-footer>

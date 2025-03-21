@@ -1,0 +1,35 @@
+<ion-content>
+  <div *ngIf="product" class="product-checkout">
+    <div class="product-image-container">
+      <img
+        [src]="product.imageUrl || 'assets/placeholder-image.png'"
+        [alt]="product.name"
+        class="product-image"
+      />
+    </div>
+    <div class="product-info">
+      <h2 class="product-name">{{ product.name }}</h2>
+      <p class="product-price">${{ product.price }}</p>
+
+      <div class="coupon-container">
+        <app-custom-input
+          placeholder="Enter coupon code"
+          [(ngModel)]="couponCode"
+        ></app-custom-input>
+      </div>
+
+      <ion-button expand="block" (click)="buyNow()" class="buy-now-button">
+        <ion-icon
+          slot="start"
+          src="assets/icon/svg/shop-icon-white.svg"
+        ></ion-icon>
+        <span class="button-label">Buy Now</span>
+      </ion-button>
+    </div>
+
+    <div *ngIf="!product" class="ion-text-center ion-padding">
+      <p>No product selected. Please go back and select a product.</p>
+      <ion-button [routerLink]="['/product-list']">Back to Products</ion-button>
+    </div>
+  </div>
+</ion-content>

@@ -1,0 +1,9 @@
+<div class="form-group">
+  <label *ngIf="label">{{ label }}</label>
+  <ion-input
+    [type]="type"
+    [placeholder]="placeholder"
+    [(ngModel)]="value"
+    class="custom-input"
+  ></ion-input>
+</div>

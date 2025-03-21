@@ -1,0 +1,20 @@
+// Footer tab styles
+ion-tab-bar {
+  --background: var(--color-light);
+  --border: 1px solid var(--color-gray-200);
+  height: 60px;
+}
+
+.tab-icon {
+  font-size: 24px;
+}
+
+.tab-label {
+  font-size: var(--font-size-xs);
+  margin-top: var(--spacing-xs);
+}
+
+ion-tab-button {
+  --color: var(--color-gray-600);
+  --color-selected: var(--color-success);
+}

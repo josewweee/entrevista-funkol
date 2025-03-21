@@ -1,0 +1,7 @@
+{
+  "name": "project_name",
+  "integrations": {
+    "cordova": {}
+  },
+  "type": "angular-standalone"
+}

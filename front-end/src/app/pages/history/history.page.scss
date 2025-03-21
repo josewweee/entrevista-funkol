@@ -1,0 +1,115 @@
+/* History page styles */
+ion-content {
+  --background: var(--color-gray-50);
+}
+
+ion-header ion-toolbar {
+  --background: var(--color-light);
+  --color: var(--text-color);
+}
+
+ion-card {
+  border-radius: var(--card-radius);
+  margin: var(--spacing-md) 0;
+  box-shadow: var(--card-shadow);
+  border: var(--card-border-width) solid var(--card-border-color);
+  background: var(--card-bg);
+  overflow: hidden;
+}
+
+ion-card-header {
+  padding: var(--spacing-md) var(--spacing-md) var(--spacing-sm);
+  border-bottom: 1px solid var(--color-gray-100);
+}
+
+ion-card-content {
+  padding: 0;
+}
+
+ion-card-title {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-color);
+  margin-bottom: var(--spacing-xs);
+}
+
+.order-date {
+  font-size: var(--font-size-xs);
+  color: var(--color-gray-500);
+  margin: 0;
+}
+
+ion-list {
+  padding: 0;
+}
+
+ion-item {
+  --padding-start: var(--spacing-md);
+  --padding-end: var(--spacing-md);
+  --inner-padding-end: 0;
+  --background: transparent;
+  --border-color: var(--color-gray-100);
+}
+
+.order-info-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-sm) 0;
+}
+
+.order-info-item .label {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-gray-600);
+}
+
+.order-info-item .value {
+  font-size: var(--font-size-md);
+  color: var(--text-color);
+}
+
+.address-block {
+  text-align: right;
+}
+
+.address-block p {
+  margin: var(--spacing-xs) 0;
+  line-height: 1.4;
+}
+
+.order-item {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-sm) 0;
+}
+
+.product-info h4 {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  margin: 0 0 var(--spacing-xs) 0;
+  color: var(--text-color);
+}
+
+.product-info p {
+  font-size: var(--font-size-xs);
+  color: var(--color-gray-500);
+  margin: 0;
+}
+
+.product-price {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-dark);
+}
+
+ion-badge {
+  text-transform: capitalize;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: 16px;
+  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-xs);
+}

@@ -1,0 +1,29 @@
+.form-group {
+  margin-bottom: var(--spacing-md);
+  width: 100%;
+
+  label {
+    display: block;
+    font-size: var(--label-font-size);
+    margin-bottom: var(--spacing-xs);
+    color: var(--text-color);
+  }
+}
+
+.custom-input {
+  --background: var(--color-gray-100);
+  --padding-start: var(--spacing-md);
+  --padding-end: var(--spacing-md);
+  --padding-top: 14px;
+  --padding-bottom: 14px;
+  --border-radius: 8px;
+  --color: var(--text-color);
+  --placeholder-color: var(--placeholder-color);
+  --border-style: none;
+  margin-top: 0;
+
+  &::part(native) {
+    background: var(--color-gray-100);
+    border-radius: 8px;
+  }
+}

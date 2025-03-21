@@ -1,0 +1,114 @@
+#container {
+  text-align: center;
+
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+#container strong {
+  font-size: 20px;
+  line-height: 26px;
+}
+
+#container p {
+  font-size: 16px;
+  line-height: 22px;
+
+  color: #8c8c8c;
+
+  margin: 0;
+}
+
+#container a {
+  text-decoration: none;
+}
+
+/* Container for the entire login page */
+ion-content.login-content {
+  --background: var(--background-color);
+  --padding-start: 36px;
+  --padding-end: 36px;
+  --padding-top: 60px;
+  --overflow: hidden;
+}
+
+.login-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 100%;
+}
+
+h1 {
+  font-size: var(--heading-font-size);
+  font-weight: 600;
+  margin-bottom: 24px;
+  color: var(--text-color);
+  margin-top: 0;
+}
+
+.form-group {
+  margin-bottom: 20px;
+  width: 100%;
+
+  label {
+    display: block;
+    font-size: var(--label-font-size);
+    margin-bottom: 8px;
+    color: var(--text-color);
+  }
+}
+
+.custom-input {
+  --background: var(--input-background-color);
+  --padding-start: var(--input-padding);
+  --padding-end: var(--input-padding);
+  --padding-top: 14px;
+  --padding-bottom: 14px;
+  --border-radius: var(--input-border-radius);
+  --color: var(--text-color);
+  --placeholder-color: var(--placeholder-color);
+  margin-top: 4px;
+
+  &::part(native) {
+    background: var(--input-background-color);
+    border-radius: var(--input-border-radius);
+  }
+}
+
+.google-btn-container {
+  margin-top: 32px;
+  display: flex;
+  justify-content: center;
+}
+
+.google-btn {
+  --border-color: var(--color-gray-300);
+  --border-width: 1px;
+  --border-style: solid;
+  --border-radius: var(--button-radius);
+  --background: var(--background-color);
+  --color: var(--text-color);
+  --box-shadow: none;
+  --padding-top: 0;
+  --padding-bottom: 0;
+  --padding-start: 8px;
+  --padding-end: 8px;
+  font-weight: var(--button-font-weight);
+  width: 100%;
+  max-width: 300px;
+  margin: 0 auto;
+  height: var(--button-height);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.google-logo {
+  height: 18px;
+  margin-right: 8px;
+}

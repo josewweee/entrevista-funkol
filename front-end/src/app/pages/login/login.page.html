@@ -1,0 +1,33 @@
+<ion-content class="login-content">
+  <div class="login-container">
+    <h1>Create an account</h1>
+
+    <app-custom-input
+      label="First name"
+      placeholder="Enter first name"
+      [(ngModel)]="firstName"
+    ></app-custom-input>
+
+    <app-custom-input
+      label="Last name"
+      placeholder="Enter last name"
+      [(ngModel)]="lastName"
+    ></app-custom-input>
+
+    <div class="google-btn-container">
+      <ion-button
+        expand="block"
+        fill="outline"
+        class="google-btn"
+        (click)="loginWithGoogle()"
+      >
+        <img
+          src="assets/icon/svg/google-logo.svg"
+          alt="Google"
+          class="google-logo"
+        />
+        Continue with Google
+      </ion-button>
+    </div>
+  </div>
+</ion-content>

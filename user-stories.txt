@@ -1,0 +1,106 @@
+Desarrollar una app mobile que permita a los usuarios explorar y comprar productos de
+Google, Apple y Samsung.
+La aplicación ofrecerá una interfaz moderna y fluida con una experiencia de usuario
+intuitiva.
+Diseño figma:
+https://www.figma.com/design/xHHg0Pvyfe2qoMj10mar6S/Challenge?node-id=0-
+1&t=ieFQs0vu9JIoLM82-1
+
+📖 Historias de Usuario
+1. Autenticación con Google SSO
+ID: U001
+Título: Iniciar sesión con Google
+Descripción: Como usuario, quiero poder iniciar sesión con mi cuenta de Google para que
+mis datos personales se autocompleten y pueda comprar de forma rápida.
+Criterios de Aceptación:
+✔ El usuario puede hacer clic en "Iniciar sesión con Google".
+✔ Se obtiene automáticamente su nombre y correo.
+✔ Si la sesión ya está iniciada, el usuario es redirigido automáticamente a la lista de
+productos.
+✔ El usuario puede cerrar sesión cuando lo desee.
+
+2. Gestión de Usuarios en Backend.
+ID: U002
+Título: Almacenar y gestionar usuarios en Base de datos
+Descripción: Como desarrollador, quiero que la información de los usuarios se almacene
+en BD para futuras compras y personalización.
+Criterios de Aceptación:
+✔ Si el usuario inicia sesión por primera vez, su nombre, email y fecha de registro se
+almacenan en BD.
+✔ Si ya existe en la base de datos, solo se actualiza la fecha de último acceso.
+✔ La información del usuario debe poder recuperarse en cada sesión.
+
+3. Explorar Productos por Marca
+ID: U003
+Título: Filtrar productos por marca
+Descripción: Como usuario, quiero poder filtrar productos por marca (Google, Apple o
+Samsung) para encontrar más fácilmente lo que me interesa.
+Criterios de Aceptación:
+✔ Se muestra una lista de productos con imágenes, nombres y precios.
+✔ Hay una barra de filtro con opciones para seleccionar solo una marca.
+✔ Al seleccionar una marca, la lista se actualiza mostrando solo los productos de esa
+marca.
+✔ Si no se selecciona ninguna marca, se muestran todos los productos.
+✔ Los productos se almacenan en BD en una colección llamada products.
+✔ La app obtiene la lista de productos al iniciar la aplicación mediante una API.
+
+4. Ver Detalles del Producto
+ID: U004
+Título: Visualizar información de un producto
+Descripción: Como usuario, quiero poder ver una descripción detallada de un producto,
+incluyendo su imagen ampliada y precio, para decidir si quiero comprarlo.
+Criterios de Aceptación:
+✔ Al hacer clic en un producto, se abre una nueva pantalla con detalles.
+✔ Se muestra una imagen grande del producto.
+✔ Se incluye una descripción completa.
+✔ Hay un botón de "Comprar ahora" visible en la pantalla.
+✔ Al hacer clic en un producto, se debe obtener la información más reciente desde el
+backend/BD para asegurarme de que los datos son correctos.
+✔ Se obtiene la información detallada (nombre, imagen, precio, descripción).
+✔ Si no hay conexión, se muestra la última versión almacenada en caché.
+
+5. Guardar y Consultar Pedidos
+ID: U005
+Título: Historial de compras
+Descripción: Como usuario, quiero poder ver el historial de mis compras para revisar mis
+pedidos anteriores.
+Criterios de Aceptación:
+✔ Al completar un pago, se guarda un registro del pedido en BD.
+✔ Diseñar la vista que permita consultar el historial en una pantalla dedicada.
+✔ Cada pedido debe incluir producto, precio, fecha pedido.
+
+6. Despliegue del Backend en Google Cloud
+ID: U006
+Título: Implementar el backend en Google Cloud Run
+Descripción: Como desarrollador, quiero desplegar el backend en Google Cloud Run para
+escalar automáticamente y asegurar alta disponibilidad.
+Criterios de Aceptación:
+✔ El backend se desarrolla en Node.js + Express.
+✔ Se conecta a base de datos. Ej: Firestore para obtener productos y gestionar pedidos.
+✔ La API debe estar protegida con algún método de autenticación, EJ: tokens JWT.
+
+7. Implementación del Frontend en Firebase Hosting
+ID: U007
+Título: Desplegar la aplicación en Firebase Hosting
+Descripción: Como desarrollador, quiero que la app móvil se conecte a Firebase Hosting
+para una distribución eficiente y segura.
+
+
+Criterios de Aceptación:
+✔ Utilizar algún Framework de preferencia que tenga bases Angular, entre otros
+en HTML y CSS, como React,
+✔ Se conecta al backend desplegado en Cloud Run.
+✔ Firebase Hosting almacena archivos estáticos y sirve la app con HTTPS.
+🎯 Requisitos Generales
+La aplicación debe seguir un Modelo-Vista-Controlador (MVC), asegurando una
+separación clara entre la interfaz de usuario, la lógica de negocio y el acceso a datos.
+• Frontend (Vista) → Aplicación móvil
+• Backend APIs (Controlador) → Servidor en Node.js + Express desplegado en
+Google Cloud Run
+• Base de Datos (Modelo) → Almacenamiento de productos, usuarios y pedidos
+Adicionalmente:
+• Datos 100% dinámicos: Todos los productos, precios y usuarios se obtienen de la
+base de datos.
+• Uso de la capa gratuita de Google Cloud: La aplicación utilizará exclusivamente
+servicios que estén dentro del Google Cloud Free Tier, asegurando cero costos
+iniciales durante el desarrollo y pruebas.

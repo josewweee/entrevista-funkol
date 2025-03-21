@@ -1,0 +1,17 @@
+backend/node_modules
+backend/dist
+backend/build
+backend/coverage
+backend/logs
+backend/temp
+backend/.env.development
+backend/.env.production
+front-end/node_modules
+front-end/dist
+front-end/build
+front-end/coverage
+front-end/logs
+front-end/temp
+front-end/.env
+front-end/.env.development
+front-end/.env.production

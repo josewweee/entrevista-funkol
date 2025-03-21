@@ -1,0 +1,32 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title class="ion-text-center">Tech Store</ion-title>
+    <div class="svg-container">
+      <img src="assets/icon/svg/shop-icon-black.svg" alt="Custom SVG Icon" />
+    </div>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="filter-container">
+    <ion-chip
+      *ngFor="let brand of brands"
+      [class.selected]="isBrandSelected(brand)"
+      (click)="filterByBrand(brand)"
+    >
+      <ion-label>{{ brand }}</ion-label>
+    </ion-chip>
+  </div>
+
+  <div class="product-grid">
+    <div class="product-card" *ngFor="let product of products">
+      <app-product-card [product]="product"></app-product-card>
+    </div>
+  </div>
+
+  <div *ngIf="products.length === 0" class="ion-text-center ion-padding">
+    <p>No products available.</p>
+  </div>
+</ion-content>
+
+<app-footer></app-footer>

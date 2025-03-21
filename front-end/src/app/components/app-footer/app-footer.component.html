@@ -1,0 +1,27 @@
+<ion-footer>
+  <ion-tab-bar>
+    <ion-tab-button tab="home" [routerLink]="['/product-list']">
+      <ion-icon
+        [name]="isActive('/product-list') ? 'home' : 'home-outline'"
+        class="tab-icon"
+      ></ion-icon>
+      <ion-label class="tab-label">Home</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button tab="history" [routerLink]="['/history']">
+      <ion-icon
+        [name]="isActive('/history') ? 'time' : 'time-outline'"
+        class="tab-icon"
+      ></ion-icon>
+      <ion-label class="tab-label">Orders</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button tab="logout" [routerLink]="['/login']">
+      <ion-icon
+        [name]="isActive('/login') ? 'person' : 'person-outline'"
+        class="tab-icon"
+      ></ion-icon>
+      <ion-label class="tab-label">Logout</ion-label>
+    </ion-tab-button>
+  </ion-tab-bar>
+</ion-footer>

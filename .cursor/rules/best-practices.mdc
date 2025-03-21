@@ -1,0 +1,18 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+
+# Your rule content
+  
+## Ionic with Angular:
+   - Utilize Angular CLI for scaffolding, building, and testing.  
+   - Organize code using Angular modules, components, and services effectively.  
+   - Keep a clean and well-structured component hierarchy.
+
+## Node.js with Express:
+   - Use middleware effectively for tasks like authentication, logging, and error handling.  
+   - Structure routes and controllers in a modular fashion.  
+   - Validate and sanitize user inputs to maintain robust security.  
+   - Adopt modern asynchronous patterns using async/await and Promises
