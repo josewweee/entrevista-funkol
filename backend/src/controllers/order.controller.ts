@@ -13,6 +13,7 @@ export const createNewOrder = async (
   next: NextFunction
 ) => {
   try {
+    // Check if user is authenticated
     if (!req.user || !req.user.uid) {
       return res.status(401).json({
         success: false,

@@ -1,25 +1,51 @@
-import { createUser, getUserById, updateUserLastLogin } from './user.service';
+import { OAuth2Client } from 'google-auth-library';
 import { auth } from '../config/firebase.config';
 import { User } from '../types';
+import { toISOString } from '../utils/date-utils';
+
+import {
+  createUser,
+  getUserByGoogleId,
+  updateUserLastLogin,
+} from './user.service';
+
+// Create a new OAuth client using your Google Client ID
+const CLIENT_ID = process.env.CLIENT_ID;
+const client = new OAuth2Client(CLIENT_ID);
 
 export const verifyGoogleToken = async (idToken: string): Promise<User> => {
   try {
-    // Verify the ID token
-    const decodedToken = await auth.verifyIdToken(idToken);
-    const { uid, email, name, picture } = decodedToken;
+    // First, verify the Google token
+    const ticket = await client.verifyIdToken({
+      idToken,
+      audience: CLIENT_ID,
+    });
 
-    // Check if user exists
-    const existingUser = await getUserById(uid);
+    const payload = ticket.getPayload();
+    if (!payload) {
+      throw new Error('Invalid Google token payload');
+    }
+
+    const { sub, email, name, picture } = payload;
+
+    // Use the Google user ID (sub) to check or create the user
+    const googleUserId = sub; // This is the Google user ID
+
+    // Check if user exists by Google ID
+    const existingUser = await getUserByGoogleId(googleUserId);
 
     if (existingUser) {
       // User exists, update last login time
-      await updateUserLastLogin(uid);
-      return { ...existingUser, lastLogin: new Date() };
+      await updateUserLastLogin(existingUser.uid);
+      return {
+        ...existingUser,
+        lastLogin: toISOString(new Date()),
+      };
     }
 
-    // User doesn't exist, create a new one
+    // User doesn't exist, create a new one with a generated Firebase ID
     const newUser = await createUser({
-      uid,
+      googleId: googleUserId, // Store the Google ID
       email: email || '',
       displayName: name || '',
       photoURL: picture || '',

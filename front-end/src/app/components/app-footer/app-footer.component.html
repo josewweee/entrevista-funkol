@@ -16,12 +16,16 @@
       <ion-label class="tab-label">Orders</ion-label>
     </ion-tab-button>
 
-    <ion-tab-button tab="logout" [routerLink]="['/login']">
-      <ion-icon
-        [name]="isActive('/login') ? 'person' : 'person-outline'"
-        class="tab-icon"
-      ></ion-icon>
+    <ion-tab-button tab="profile" (click)="logout()">
+      <ion-icon name="log-out-outline" class="tab-icon"></ion-icon>
       <ion-label class="tab-label">Logout</ion-label>
     </ion-tab-button>
   </ion-tab-bar>
 </ion-footer>
+
+<ion-toast
+  [isOpen]="showToast"
+  message="Logged out successfully"
+  [duration]="2000"
+  (didDismiss)="showToast = false"
+></ion-toast>

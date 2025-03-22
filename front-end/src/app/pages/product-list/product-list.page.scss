@@ -12,6 +12,7 @@ ion-toolbar {
 }
 
 ion-header {
+  box-shadow: none;
   &::after {
     display: none;
   }

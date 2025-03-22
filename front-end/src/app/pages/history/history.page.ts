@@ -17,7 +17,6 @@ import {
   IonToolbar,
 } from '@ionic/angular/standalone';
 
-
 @Component({
   selector: 'app-history',
   standalone: true,

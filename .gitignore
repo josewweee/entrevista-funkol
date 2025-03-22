@@ -4,6 +4,7 @@ backend/build
 backend/coverage
 backend/logs
 backend/temp
+backend/serviceAccountKey.json
 backend/.env.development
 backend/.env.production
 front-end/node_modules
@@ -12,6 +13,6 @@ front-end/build
 front-end/coverage
 front-end/logs
 front-end/temp
-front-end/.env
-front-end/.env.development
-front-end/.env.production
+front-end/src/environments/environment.prod.ts
+front-end/src/environments/environment.ts
+front-end/.firebase

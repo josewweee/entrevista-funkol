@@ -20,12 +20,19 @@
         fill="outline"
         class="google-btn"
         (click)="loginWithGoogle()"
+        [disabled]="isLoading"
       >
         <img
+          *ngIf="!isLoading"
           src="assets/icon/svg/google-logo.svg"
           alt="Google"
           class="google-logo"
         />
+        <ion-spinner
+          *ngIf="isLoading"
+          name="dots"
+          class="google-loader"
+        ></ion-spinner>
         Continue with Google
       </ion-button>
     </div>

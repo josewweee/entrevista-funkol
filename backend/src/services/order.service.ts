@@ -1,5 +1,6 @@
 import { db } from '../config/firebase.config';
 import { Order } from '../types';
+import { toISOString } from '../utils/date-utils';
 
 const ordersCollection = db.collection('orders');
 
@@ -10,7 +11,7 @@ export const createOrder = async (
     const now = new Date();
     const newOrder = {
       ...orderData,
-      createdAt: now,
+      createdAt: toISOString(now),
     };
 
     const docRef = await ordersCollection.add(newOrder);

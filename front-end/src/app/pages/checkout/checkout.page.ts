@@ -3,16 +3,19 @@ import { Component, OnInit } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Router, RouterLink } from '@angular/router';
+import { AppFooterComponent } from '../../components/app-footer/app-footer.component';
 import { CustomInputComponent } from '../../components/custom-input/custom-input.component';
+import { AuthService } from '../../services/auth.service';
 import { OrderService } from '../../services/order.service';
 import { Product, ProductService } from '../../services/product.service';
+import { toISOString } from '../../utils/date-utils';
 import {
   IonButton,
   IonContent,
   IonIcon,
   LoadingController,
+  ToastController,
 } from '@ionic/angular/standalone';
-
 
 @Component({
   selector: 'app-checkout',
@@ -26,6 +29,7 @@ import {
     IonButton,
     IonIcon,
     CustomInputComponent,
+    AppFooterComponent,
   ],
   templateUrl: './checkout.page.html',
   styleUrls: ['./checkout.page.scss'],
@@ -39,7 +43,9 @@ export class CheckoutPage implements OnInit {
     private productService: ProductService,
     private router: Router,
     private loadingController: LoadingController,
-    private orderService: OrderService
+    private orderService: OrderService,
+    private authService: AuthService,
+    private toastController: ToastController
   ) {}
 
   ngOnInit() {
@@ -56,6 +62,19 @@ export class CheckoutPage implements OnInit {
   async buyNow() {
     if (!this.product) return;
 
+    // Check if user is authenticated
+    if (!this.authService.isAuthenticated()) {
+      this.presentToast('Please log in to complete your purchase', 'danger');
+      this.router.navigate(['/login']);
+      return;
+    }
+
+    const currentUser = this.authService.getCurrentUser();
+    if (!currentUser) {
+      this.presentToast('User information not available', 'danger');
+      return;
+    }
+
     // Show loading indicator
     const loading = await this.loadingController.create({
       message: 'Processing payment...',
@@ -63,25 +82,63 @@ export class CheckoutPage implements OnInit {
     });
     await loading.present();
 
-    // Simulate payment processing delay
-    setTimeout(() => {
-      // Create a new order
-      this.orderService.addOrder({
-        userId: 'user123',
-        products: [
-          {
-            productId: this.product!.id.toString(),
-            name: this.product!.name,
-            price: this.product!.price,
-            quantity: 1,
-          },
-        ],
-        totalAmount: this.product!.price,
-      });
+    // Create order data
+    const orderData = {
+      products: [
+        {
+          productId: this.product.id.toString(),
+          name: this.product.name,
+          price: this.product.price,
+        },
+      ],
+      totalAmount: this.product.price,
+      // Use the utility function for consistent date formatting
+      createdAt: toISOString(new Date()),
+    };
 
-      // Dismiss loading and navigate to history page
-      loading.dismiss();
-      this.router.navigate(['/history']);
-    }, 2000); // 2 second delay
+    // Create order using token-based auth
+    this.orderService.createOrder(orderData).subscribe({
+      next: (order) => {
+        loading.dismiss();
+        this.presentToast('Order placed successfully!', 'success');
+        this.router.navigate(['/history']);
+      },
+      error: (error) => {
+        loading.dismiss();
+        console.error('Order creation failed:', error);
+
+        if (error.status === 401) {
+          // Authentication error
+          this.presentToast(
+            'Your session has expired. Please log in again.',
+            'danger'
+          );
+          this.router.navigate(['/login']);
+          return;
+        }
+
+        // Fallback to local order for network errors
+        this.orderService.addOrder({
+          userId: currentUser.uid,
+          products: orderData.products,
+          totalAmount: orderData.totalAmount,
+        });
+        this.presentToast('Order placed in offline mode', 'warning');
+        this.router.navigate(['/history']);
+      },
+    });
+  }
+
+  async presentToast(
+    message: string,
+    color: 'success' | 'danger' | 'warning' = 'success'
+  ) {
+    const toast = await this.toastController.create({
+      message,
+      duration: 2000,
+      color,
+      position: 'bottom',
+    });
+    toast.present();
   }
 }

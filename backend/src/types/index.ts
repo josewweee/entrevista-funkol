@@ -3,10 +3,11 @@ import { Request } from 'express';
 export interface User {
   uid: string;
   email: string;
+  googleId?: string;
   displayName?: string;
   photoURL?: string;
-  lastLogin: Date;
-  createdAt: Date;
+  lastLogin: Date | string;
+  createdAt: Date | string;
 }
 
 export interface Product {
@@ -27,10 +28,9 @@ export interface Order {
     productId: string;
     name: string;
     price: number;
-    quantity: number;
   }[];
   totalAmount: number;
-  createdAt: Date;
+  createdAt: Date | string;
   status: 'pending' | 'completed' | 'cancelled';
 }
 

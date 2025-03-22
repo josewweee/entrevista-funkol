@@ -1,6 +1,9 @@
 import { NextFunction, Request, Response } from 'express';
-import { auth } from '../config/firebase.config';
+import { OAuth2Client } from 'google-auth-library';
 
+// Create a new OAuth client using your Google Client ID
+const CLIENT_ID = process.env.CLIENT_ID;
+const client = new OAuth2Client(CLIENT_ID);
 
 interface AuthRequest extends Request {
   user?: {
@@ -32,10 +35,21 @@ export const authMiddleware = async (
     }
 
     try {
-      const decodedToken = await auth.verifyIdToken(token);
+      // Verify Google token
+      const ticket = await client.verifyIdToken({
+        idToken: token,
+        audience: CLIENT_ID,
+      });
+
+      const payload = ticket.getPayload();
+      if (!payload || !payload.sub) {
+        throw new Error('Invalid token payload');
+      }
+
+      // Set user from Google payload
       req.user = {
-        uid: decodedToken.uid,
-        email: decodedToken.email || '',
+        uid: payload.sub,
+        email: payload.email || '',
       };
       next();
     } catch (error) {

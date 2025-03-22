@@ -1,5 +1,6 @@
 import { db } from '../config/firebase.config';
 import { User } from '../types';
+import { toISOString } from '../utils/date-utils';
 
 const usersCollection = db.collection('users');
 
@@ -18,25 +19,47 @@ export const getUserById = async (uid: string): Promise<User | null> => {
   }
 };
 
+export const getUserByGoogleId = async (
+  googleId: string
+): Promise<User | null> => {
+  try {
+    const snapshot = await usersCollection
+      .where('googleId', '==', googleId)
+      .limit(1)
+      .get();
+
+    if (snapshot.empty) {
+      return null;
+    }
+
+    const doc = snapshot.docs[0];
+    return { uid: doc.id, ...doc.data() } as User;
+  } catch (error) {
+    console.error('Error getting user by Google ID:', error);
+    throw error;
+  }
+};
+
 export const createUser = async (userData: Partial<User>): Promise<User> => {
   try {
-    const { uid } = userData;
-
-    if (!uid) {
-      throw new Error('User ID is required');
+    // Create a document with a generated ID if uid is not provided
+    if (!userData.uid) {
+      const docRef = usersCollection.doc();
+      userData.uid = docRef.id;
     }
 
     const now = new Date();
     const newUser: User = {
-      uid,
+      uid: userData.uid,
       email: userData.email || '',
+      googleId: userData.googleId, // Include googleId if present
       displayName: userData.displayName || '',
       photoURL: userData.photoURL || '',
-      lastLogin: now,
-      createdAt: now,
+      lastLogin: toISOString(now),
+      createdAt: toISOString(now),
     };
 
-    await usersCollection.doc(uid).set(newUser);
+    await usersCollection.doc(userData.uid).set(newUser);
     return newUser;
   } catch (error) {
     console.error('Error creating user:', error);
@@ -47,7 +70,7 @@ export const createUser = async (userData: Partial<User>): Promise<User> => {
 export const updateUserLastLogin = async (uid: string): Promise<void> => {
   try {
     await usersCollection.doc(uid).update({
-      lastLogin: new Date(),
+      lastLogin: toISOString(new Date()),
     });
   } catch (error) {
     console.error('Error updating user last login:', error);

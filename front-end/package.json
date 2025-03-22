@@ -6,10 +6,15 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build",
+    "build": "ng build --configuration production",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "lint": "ng lint"
+    "lint": "ng lint",
+    "build:prod": "ng build --configuration production",
+    "firebase:login": "firebase login",
+    "firebase:init": "firebase init",
+    "deploy": "npm run build:prod && firebase deploy",
+    "deploy:ci": "npm run build:prod && firebase deploy --token \"$FIREBASE_TOKEN\""
   },
   "private": true,
   "dependencies": {
@@ -46,6 +51,7 @@
     "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-jsdoc": "^48.2.1",
     "eslint-plugin-prefer-arrow": "1.2.2",
+    "firebase-tools": "^13.2.1",
     "jasmine-core": "~5.1.0",
     "jasmine-spec-reporter": "~5.0.0",
     "karma": "~6.4.0",

@@ -1,4 +1,8 @@
 /node_modules
+/front-end/node_modules
+/backend/node_modules
+backend/pnpm-lock.yaml
+front-end/package-lock.json
 /dist
 /build
 /coverage
@@ -7,6 +11,6 @@
 /uploads
 .env
 .env.local
-.env.development.local
+.env.development
 .env.test.local
-.env.production.local
+.env.production

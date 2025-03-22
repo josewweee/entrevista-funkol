@@ -1,26 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Ionic App</title>
 
-<head>
-  <meta charset="utf-8" />
-  <title>Ionic App</title>
+    <base href="/" />
 
-  <base href="/" />
+    <meta name="color-scheme" content="light dark" />
+    <meta
+      name="viewport"
+      content="viewport-fit=cover, width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="msapplication-tap-highlight" content="no" />
 
-  <meta name="color-scheme" content="light dark" />
-  <meta name="viewport" content="viewport-fit=cover, width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <meta name="format-detection" content="telephone=no" />
-  <meta name="msapplication-tap-highlight" content="no" />
+    <!-- Content Security Policy to allow Google Sign-In -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self' https://accounts.google.com https://*.googleapis.com; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://accounts.google.com https://*.googleapis.com https://www.gstatic.com; style-src 'self' 'unsafe-inline' https://www.gstatic.com; img-src 'self' data: https://*.googleusercontent.com https://*.phonearena.com https://m-cdn.phonearena.com https://*.cdninstagram.com https://*.fbcdn.net https://*.imgur.com https://*.cloudfront.net https://www.gstatic.com https://*; connect-src 'self' https://accounts.google.com https://*.googleapis.com http://localhost:3000 https://entrevista-funkol-api-s63ghggqra-uc.a.run.app https://entrevista-funkol-api.your-domain.com https://securetoken.googleapis.com https://www.googleapis.com;"
+    />
 
-  <link rel="icon" type="image/png" href="assets/icon/favicon.png" />
+    <link rel="icon" type="image/png" href="assets/icon/favicon.png" />
 
-  <!-- add to homescreen for ios -->
-  <meta name="mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-</head>
+    <!-- add to homescreen for ios -->
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
 
-<body>
-  <app-root></app-root>
-</body>
+    <!-- Google Sign-In related meta tags -->
+    <meta
+      name="google-signin-client_id"
+      content="451632148653-ic7141vfu6mcb0jnp62nh9js699fodn7.apps.googleusercontent.com"
+    />
+  </head>
 
+  <body>
+    <app-root></app-root>
+  </body>
 </html>
