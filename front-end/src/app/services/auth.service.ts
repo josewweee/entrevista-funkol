@@ -8,6 +8,13 @@ import { parseDate } from '../utils/date-utils';
 // Declare Google global variable
 declare const google: any;
 
+//-------------------------------
+// Interface Definitions
+//-------------------------------
+
+/**
+ * User information model
+ */
 export interface User {
   uid: string;
   email: string;
@@ -18,6 +25,9 @@ export interface User {
   createdAt: Date | string;
 }
 
+/**
+ * Standard API response format
+ */
 interface ApiResponse<T> {
   success: boolean;
   message: string;
@@ -28,24 +38,41 @@ interface ApiResponse<T> {
   providedIn: 'root',
 })
 export class AuthService {
+  //-------------------------------
+  // Service Properties
+  //-------------------------------
+
+  // API endpoints
   private apiUrl = `${environment.apiUrl}/auth`;
   private userApiUrl = `${environment.apiUrl}/users`;
 
+  // User state observables
   private currentUserSubject = new BehaviorSubject<User | null>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
 
-  // Track authentication state
+  // Authentication state
   private isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
   public isAuthenticated$ = this.isAuthenticatedSubject.asObservable();
 
-  // Store the token
+  // Auth token state
   private tokenSubject = new BehaviorSubject<string | null>(null);
 
   constructor(private http: HttpClient) {
-    // Check for existing session on service initialization
+    // Initialize authentication state
     this.checkExistingSession();
   }
 
+  //-------------------------------
+  // Public Authentication Methods
+  //-------------------------------
+
+  /**
+   * Authenticates a user using Google ID token
+   *
+   * @param idToken - Token from Google authentication
+   * @param fullName - Optional user's full name
+   * @returns Observable with authenticated user
+   */
   loginWithGoogle(idToken: string, fullName?: string): Observable<User> {
     return this.http
       .post<ApiResponse<User>>(`${this.apiUrl}/google`, { idToken, fullName })
@@ -85,6 +112,11 @@ export class AuthService {
       );
   }
 
+  /**
+   * Fetches the current user's profile from the API
+   *
+   * @returns Observable with user information
+   */
   fetchCurrentUser(): Observable<User> {
     return this.http.get<ApiResponse<User>>(`${this.userApiUrl}/me`).pipe(
       map((response) => {
@@ -115,6 +147,11 @@ export class AuthService {
     );
   }
 
+  /**
+   * Logs out the current user
+   *
+   * @returns Observable confirming logout success
+   */
   logout(): Observable<boolean> {
     // Sign out from Google if available
     try {
@@ -131,6 +168,44 @@ export class AuthService {
     return of(true);
   }
 
+  //-------------------------------
+  // Session and Token Management
+  //-------------------------------
+
+  /**
+   * Retrieves the current authentication token
+   *
+   * @returns The authentication token or null
+   */
+  getToken(): string | null {
+    return this.tokenSubject.value;
+  }
+
+  /**
+   * Gets the current authenticated user
+   *
+   * @returns The current user or null if not authenticated
+   */
+  getCurrentUser(): User | null {
+    return this.currentUserSubject.value;
+  }
+
+  /**
+   * Checks if user is currently authenticated
+   *
+   * @returns true if authenticated, false otherwise
+   */
+  isAuthenticated(): boolean {
+    return this.isAuthenticatedSubject.value;
+  }
+
+  //-------------------------------
+  // Private Helper Methods
+  //-------------------------------
+
+  /**
+   * Checks for an existing user session in local storage
+   */
   private checkExistingSession(): void {
     const savedToken = localStorage.getItem('auth_token');
     const savedUser = localStorage.getItem('currentUser');
@@ -169,37 +244,37 @@ export class AuthService {
     }
   }
 
+  /**
+   * Updates the current user state
+   */
   private setCurrentUser(user: User): void {
     this.currentUserSubject.next(user);
     this.isAuthenticatedSubject.next(true);
   }
 
+  /**
+   * Saves user data to local storage
+   */
   private saveUserToLocalStorage(user: User): void {
     localStorage.setItem('currentUser', JSON.stringify(user));
   }
 
+  /**
+   * Stores authentication token in local storage
+   */
   private storeToken(token: string): void {
     localStorage.setItem('auth_token', token);
     this.tokenSubject.next(token);
   }
 
+  /**
+   * Clears user session data from memory and storage
+   */
   private clearUserSession(): void {
     localStorage.removeItem('currentUser');
     localStorage.removeItem('auth_token');
     this.currentUserSubject.next(null);
     this.isAuthenticatedSubject.next(false);
     this.tokenSubject.next(null);
-  }
-
-  getToken(): string | null {
-    return this.tokenSubject.value;
-  }
-
-  getCurrentUser(): User | null {
-    return this.currentUserSubject.value;
-  }
-
-  isAuthenticated(): boolean {
-    return this.isAuthenticatedSubject.value;
   }
 }

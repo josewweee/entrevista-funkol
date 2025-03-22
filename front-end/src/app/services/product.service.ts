@@ -4,8 +4,18 @@ import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 
+//-------------------------------
+// Interface Definitions
+//-------------------------------
+
+/**
+ * Product brand types
+ */
 export type ProductBrand = 'Apple' | 'Google' | 'Samsung';
 
+/**
+ * Product information model
+ */
 export interface Product {
   id: number;
   name: string;
@@ -15,6 +25,9 @@ export interface Product {
   imageUrl?: string;
 }
 
+/**
+ * Standard API response format
+ */
 interface ApiResponse<T> {
   success: boolean;
   data: T;
@@ -26,9 +39,17 @@ interface ApiResponse<T> {
   providedIn: 'root',
 })
 export class ProductService {
+  //-------------------------------
+  // Service Properties
+  //-------------------------------
+
+  // API endpoint
   private apiUrl = `${environment.apiUrl}/products`;
 
-  // Fallback products for offline mode or error cases
+  /**
+   * Fallback products for offline mode or error cases
+   * Used when API calls fail
+   */
   private fallbackProducts: Product[] = [
     {
       id: 1,
@@ -82,6 +103,15 @@ export class ProductService {
 
   constructor(private http: HttpClient) {}
 
+  //-------------------------------
+  // Product Retrieval Methods
+  //-------------------------------
+
+  /**
+   * Gets all available products
+   *
+   * @returns Observable of all products
+   */
   getProducts(): Observable<Product[]> {
     return this.http.get<ApiResponse<Product[]>>(this.apiUrl).pipe(
       map((response) => response.data),
@@ -92,6 +122,12 @@ export class ProductService {
     );
   }
 
+  /**
+   * Gets products filtered by brand
+   *
+   * @param brand - Optional brand to filter by
+   * @returns Observable of filtered products
+   */
   getProductsByBrand(brand?: ProductBrand): Observable<Product[]> {
     if (!brand) {
       return this.getProducts();
@@ -111,6 +147,12 @@ export class ProductService {
     );
   }
 
+  /**
+   * Gets a specific product by ID
+   *
+   * @param id - Product ID to retrieve
+   * @returns Observable of the product or undefined if not found
+   */
   getProduct(id: number): Observable<Product | undefined> {
     const url = `${this.apiUrl}/${id}`;
     return this.http.get<ApiResponse<Product>>(url).pipe(
