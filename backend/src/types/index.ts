@@ -1,5 +1,12 @@
 import { Request } from 'express';
 
+//-------------------------------
+// User & Authentication Types
+//-------------------------------
+
+/**
+ * User information model
+ */
 export interface User {
   uid: string;
   email: string;
@@ -10,6 +17,24 @@ export interface User {
   createdAt: Date | string;
 }
 
+/**
+ * Extended Express Request with authentication data
+ */
+export interface AuthRequest extends Request {
+  user?: {
+    uid: string; // Google ID for backward compatibility
+    dbUid?: string; // Firebase UID from the database
+    email: string;
+  };
+}
+
+//-------------------------------
+// Product Types
+//-------------------------------
+
+/**
+ * Product information model
+ */
 export interface Product {
   id: string;
   name: string;
@@ -21,6 +46,13 @@ export interface Product {
   updatedAt: Date;
 }
 
+//-------------------------------
+// Order Types
+//-------------------------------
+
+/**
+ * Order information model
+ */
 export interface Order {
   id: string;
   userId: string;
@@ -32,11 +64,4 @@ export interface Order {
   totalAmount: number;
   createdAt: Date | string;
   status: 'pending' | 'completed' | 'cancelled';
-}
-
-export interface AuthRequest extends Request {
-  user?: {
-    uid: string;
-    email: string;
-  };
 }

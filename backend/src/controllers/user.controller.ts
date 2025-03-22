@@ -1,14 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { getUserByGoogleId, getUserById } from '../services/user.service';
-
-// Update AuthRequest interface to include dbUid
-interface AuthRequest extends Request {
-  user?: {
-    uid: string;
-    dbUid?: string;
-    email: string;
-  };
-}
+import { AuthRequest } from '../types';
 
 export const getCurrentUser = async (
   req: AuthRequest,

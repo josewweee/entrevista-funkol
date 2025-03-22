@@ -25,37 +25,46 @@ declare const google: any;
   ],
 })
 export class LoginPage implements OnInit, OnDestroy {
+  // User information
   firstName = '';
   lastName = '';
+
+  // UI state
   isLoading = false;
   isLoggedIn = false;
+
+  // Private state management
   private authSubscription: Subscription | null = null;
-  private isFetchingUser = false; // Flag to prevent multiple fetches
+  private isFetchingUser = false;
 
   constructor(private authService: AuthService, private router: Router) {}
 
+  //-------------------------------
+  // Lifecycle Hooks
+  //-------------------------------
+
   ngOnInit() {
-    // Check authentication state immediately
     this.checkAuthenticationState();
-
-    // Subscribe to future authentication state changes
-    // but don't trigger checkAuthenticationState again if we're already checking
-    this.authSubscription = this.authService.isAuthenticated$.subscribe(
-      (isAuthenticated) => {
-        // Update the UI state without triggering another fetch
-        this.isLoggedIn = isAuthenticated;
-      }
-    );
-
-    // Load Google authentication script
+    this.subscribeToAuthChanges();
     this.loadGoogleAuthAPI();
   }
 
   ngOnDestroy() {
-    // Clean up subscription to prevent memory leaks
     if (this.authSubscription) {
       this.authSubscription.unsubscribe();
     }
+  }
+
+  //-------------------------------
+  // Authentication State Management
+  //-------------------------------
+
+  private subscribeToAuthChanges() {
+    this.authSubscription = this.authService.isAuthenticated$.subscribe(
+      (isAuthenticated) => {
+        this.isLoggedIn = isAuthenticated;
+      }
+    );
   }
 
   private checkAuthenticationState() {
@@ -63,41 +72,43 @@ export class LoginPage implements OnInit, OnDestroy {
     this.isLoggedIn = isAuthenticated;
 
     if (isAuthenticated && !this.isFetchingUser) {
-      this.isFetchingUser = true; // Set flag to prevent multiple fetches
-
-      // Fetch the latest user data from the database
-      this.authService.fetchCurrentUser().subscribe({
-        next: (userData) => {
-          this.isFetchingUser = false; // Reset flag
-
-          if (userData && userData.displayName) {
-            const nameParts = userData.displayName.split(' ');
-            this.firstName = nameParts[0] || '';
-            this.lastName =
-              nameParts.length > 1 ? nameParts.slice(1).join(' ') : '';
-          }
-        },
-        error: (error) => {
-          console.error('Error fetching user from database:', error);
-          this.isFetchingUser = false; // Reset flag even on error
-
-          // Fallback to cached user if fetch fails
-          const cachedUser = this.authService.getCurrentUser();
-          console.log('Falling back to cached user:', cachedUser);
-
-          if (cachedUser && cachedUser.displayName) {
-            const nameParts = cachedUser.displayName.split(' ');
-            this.firstName = nameParts[0] || '';
-            this.lastName =
-              nameParts.length > 1 ? nameParts.slice(1).join(' ') : '';
-          }
-        },
-      });
+      this.fetchUserData();
     }
   }
 
+  private fetchUserData() {
+    this.isFetchingUser = true;
+
+    this.authService.fetchCurrentUser().subscribe({
+      next: (userData) => {
+        this.isFetchingUser = false;
+        this.updateUserNameFromProfile(userData);
+      },
+      error: (error) => {
+        console.error('Error fetching user from database:', error);
+        this.isFetchingUser = false;
+
+        // Fallback to cached user
+        const cachedUser = this.authService.getCurrentUser();
+        console.log('Falling back to cached user:', cachedUser);
+        this.updateUserNameFromProfile(cachedUser);
+      },
+    });
+  }
+
+  private updateUserNameFromProfile(userProfile: any) {
+    if (userProfile && userProfile.displayName) {
+      const nameParts = userProfile.displayName.split(' ');
+      this.firstName = nameParts[0] || '';
+      this.lastName = nameParts.length > 1 ? nameParts.slice(1).join(' ') : '';
+    }
+  }
+
+  //-------------------------------
+  // Google Authentication
+  //-------------------------------
+
   private loadGoogleAuthAPI() {
-    // Load the Google Sign-In API
     const script = document.createElement('script');
     script.src = 'https://accounts.google.com/gsi/client';
     script.async = true;
@@ -110,7 +121,6 @@ export class LoginPage implements OnInit, OnDestroy {
   }
 
   private initGoogleAuth() {
-    // Initialize Google Sign-In with proper configuration
     google.accounts.id.initialize({
       client_id: environment.googleClientId,
       callback: this.handleCredentialResponse.bind(this),
@@ -134,27 +144,20 @@ export class LoginPage implements OnInit, OnDestroy {
         ? this.firstName + ' ' + this.lastName
         : undefined;
 
+    this.authenticateWithGoogleToken(idToken, fullName);
+  }
+
+  private authenticateWithGoogleToken(idToken: string, fullName?: string) {
     this.authService.loginWithGoogle(idToken, fullName).subscribe({
       next: (user) => {
-        // Ensure we're not already fetching user data
         if (!this.isFetchingUser) {
           this.isFetchingUser = true;
 
-          // Fetch the latest user data from the database
           this.authService.fetchCurrentUser().subscribe({
             next: (databaseUser) => {
               this.isFetchingUser = false;
-
-              // Set firstName and lastName from database user's displayName
-              if (databaseUser && databaseUser.displayName) {
-                const nameParts = databaseUser.displayName.split(' ');
-                this.firstName = nameParts[0] || '';
-                this.lastName =
-                  nameParts.length > 1 ? nameParts.slice(1).join(' ') : '';
-              }
-
-              // Navigate to product list page
-              this.router.navigateByUrl('/product-list', { replaceUrl: true });
+              this.updateUserNameFromProfile(databaseUser);
+              this.navigateToProductList();
             },
             error: (error) => {
               console.error(
@@ -162,14 +165,11 @@ export class LoginPage implements OnInit, OnDestroy {
                 error
               );
               this.isFetchingUser = false;
-
-              // Still navigate even if we couldn't fetch the updated user
-              this.router.navigateByUrl('/product-list', { replaceUrl: true });
+              this.navigateToProductList();
             },
           });
         } else {
-          // Skip fetching if already in progress and just navigate
-          this.router.navigateByUrl('/product-list', { replaceUrl: true });
+          this.navigateToProductList();
         }
       },
       error: (err) => {
@@ -179,18 +179,18 @@ export class LoginPage implements OnInit, OnDestroy {
     });
   }
 
-  // Delete the g_state cookie that Google uses to implement cooldown
   private clearGoogleStateCookie() {
     document.cookie = 'g_state=;path=/;expires=Thu, 01 Jan 1970 00:00:01 GMT';
   }
 
+  //-------------------------------
+  // Public UI Actions
+  //-------------------------------
+
   loginWithGoogle() {
     this.isLoading = true;
-
     google.accounts.id.cancel();
-
     this.clearGoogleStateCookie();
-
     this.initGoogleAuth();
 
     google.accounts.id.prompt((notification: any) => {
@@ -205,6 +205,10 @@ export class LoginPage implements OnInit, OnDestroy {
   }
 
   goToProducts() {
+    this.navigateToProductList();
+  }
+
+  private navigateToProductList() {
     this.router.navigateByUrl('/product-list', { replaceUrl: true });
   }
 }
