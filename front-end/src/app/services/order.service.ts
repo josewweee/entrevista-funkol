@@ -62,9 +62,6 @@ export class OrderService {
     this.loadUserOrders();
   }
 
-  /**
-   * Load user orders from the backend
-   */
   loadUserOrders(): void {
     if (!this.authService.isAuthenticated()) {
       this.ordersSubject.next([]);
@@ -79,7 +76,6 @@ export class OrderService {
             throw new Error(response.message || 'Failed to fetch orders');
           }
 
-          // Convert date strings to Date objects
           return response.data.map((order) => ({
             ...order,
             createdAt: parseDate(order.createdAt),
@@ -100,22 +96,15 @@ export class OrderService {
       });
   }
 
-  /**
-   * Get user orders from backend
-   */
   getOrders(): Observable<Order[]> {
     // If not authenticated, return empty array
     if (!this.authService.isAuthenticated()) {
       return of([]);
     }
 
-    // Return current value from subject
     return this.orders$;
   }
 
-  /**
-   * Get a specific order by ID
-   */
   getOrder(orderId: string): Observable<Order | null> {
     if (!this.authService.isAuthenticated()) {
       return of(null);
@@ -127,7 +116,6 @@ export class OrderService {
           throw new Error(response.message || 'Order not found');
         }
 
-        // Convert date strings to Date objects
         return {
           ...response.data,
           createdAt: parseDate(response.data.createdAt),
@@ -140,9 +128,6 @@ export class OrderService {
     );
   }
 
-  /**
-   * Create a new order
-   */
   createOrder(
     orderData: Omit<Order, 'id' | 'createdAt' | 'status' | 'userId'>
   ): Observable<Order> {

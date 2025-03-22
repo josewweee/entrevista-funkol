@@ -4,7 +4,6 @@ import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 
-
 export type ProductBrand = 'Apple' | 'Google' | 'Samsung';
 
 export interface Product {
@@ -37,7 +36,7 @@ export class ProductService {
       description: 'Active noise cancellation for immersive sound',
       price: 199,
       brand: 'Apple',
-      imageUrl: 'assets/products/placeholder-image.png',
+      imageUrl: '',
     },
     {
       id: 2,
@@ -45,7 +44,7 @@ export class ProductService {
       description: 'Smart speaker with Google Assistant',
       price: 49,
       brand: 'Google',
-      imageUrl: 'assets/products/placeholder-image.png',
+      imageUrl: '',
     },
     {
       id: 3,
@@ -53,7 +52,7 @@ export class ProductService {
       description: 'Wireless earbuds with active noise cancellation',
       price: 169,
       brand: 'Samsung',
-      imageUrl: 'assets/products/placeholder-image.png',
+      imageUrl: '',
     },
     {
       id: 4,
@@ -61,7 +60,7 @@ export class ProductService {
       description: 'Always-on Retina display, GPS and cellular',
       price: 399,
       brand: 'Apple',
-      imageUrl: 'assets/products/placeholder-image.png',
+      imageUrl: '',
     },
     {
       id: 5,
@@ -69,7 +68,7 @@ export class ProductService {
       description: 'Keep track of your items in the Find My app',
       price: 29,
       brand: 'Apple',
-      imageUrl: 'assets/products/placeholder-image.png',
+      imageUrl: '',
     },
     {
       id: 6,
@@ -77,7 +76,7 @@ export class ProductService {
       description: 'Detects movement in your home',
       price: 19,
       brand: 'Samsung',
-      imageUrl: 'assets/products/placeholder-image.png',
+      imageUrl: '',
     },
   ];
 

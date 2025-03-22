@@ -95,7 +95,6 @@ export const getOrderDetails = async (
       });
     }
 
-    // Check if the order belongs to the user
     if (order.userId !== req.user.uid) {
       return res.status(403).json({
         success: false,

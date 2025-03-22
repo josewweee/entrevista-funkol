@@ -65,7 +65,6 @@ export class AppFooterComponent implements OnInit {
     this.authService.logout().subscribe({
       next: () => {
         this.showToast = true;
-        // Navigate to login page after logout
         this.router.navigate(['/login']);
       },
       error: (error) => {

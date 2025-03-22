@@ -1,6 +1,5 @@
 import dotenv from 'dotenv';
 import * as admin from 'firebase-admin';
-import fs from 'fs';
 import path from 'path';
 
 // Load environment variables - first try .env.development, then .env

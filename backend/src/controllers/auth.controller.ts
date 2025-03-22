@@ -29,12 +29,6 @@ export const googleSignIn = async (
     });
   } catch (error) {
     console.error('Google Sign-In error:', error);
-    // next(error);
-    // Return a more informative error message
-    res.status(401).json({
-      success: false,
-      message: error instanceof Error ? error.message : 'Authentication failed',
-      error: JSON.stringify(error),
-    });
+    next(error);
   }
 };

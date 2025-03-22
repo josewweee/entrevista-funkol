@@ -74,9 +74,7 @@ export class LoginPage implements OnInit {
       return;
     }
 
-    // Process the ID token
     const idToken = response.credential;
-    // Only create fullName if both firstName and lastName are available
     const fullName =
       this.firstName || this.lastName
         ? this.firstName + ' ' + this.lastName
@@ -102,27 +100,20 @@ export class LoginPage implements OnInit {
     });
   }
 
-  /**
-   * Clear Google's g_state cookie which controls the cooldown period
-   */
+  // Delete the g_state cookie that Google uses to implement cooldown
   private clearGoogleStateCookie() {
-    // Delete the g_state cookie that Google uses to implement cooldown
     document.cookie = 'g_state=;path=/;expires=Thu, 01 Jan 1970 00:00:01 GMT';
   }
 
   loginWithGoogle() {
     this.isLoading = true;
 
-    // Cancel any existing prompt
     google.accounts.id.cancel();
 
-    // Clear the Google state cookie to bypass the cooldown
     this.clearGoogleStateCookie();
 
-    // Re-initialize to force a fresh context with updated settings
     this.initGoogleAuth();
 
-    // Try to prompt for Google sign-in
     google.accounts.id.prompt((notification: any) => {
       if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
         console.log(

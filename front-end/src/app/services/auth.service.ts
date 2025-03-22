@@ -46,10 +46,6 @@ export class AuthService {
     this.checkExistingSession();
   }
 
-  /**
-   * Login with Google
-   * Sends the ID token to the backend for verification
-   */
   loginWithGoogle(idToken: string, fullName?: string): Observable<User> {
     console.log('Sending Google ID token to backend for verification');
 
@@ -92,9 +88,6 @@ export class AuthService {
       );
   }
 
-  /**
-   * Get current user profile from backend
-   */
   fetchCurrentUser(): Observable<User> {
     return this.http.get<ApiResponse<User>>(`${this.userApiUrl}/me`).pipe(
       map((response) => {
@@ -123,9 +116,6 @@ export class AuthService {
     );
   }
 
-  /**
-   * Log out the current user
-   */
   logout(): Observable<boolean> {
     // Sign out from Google if available
     try {
@@ -142,9 +132,6 @@ export class AuthService {
     return of(true);
   }
 
-  /**
-   * Check if there's an existing session stored in localStorage
-   */
   private checkExistingSession(): void {
     const savedToken = localStorage.getItem('auth_token');
     const savedUser = localStorage.getItem('currentUser');
@@ -172,32 +159,20 @@ export class AuthService {
     }
   }
 
-  /**
-   * Update the current user and authentication state
-   */
   private setCurrentUser(user: User): void {
     this.currentUserSubject.next(user);
     this.isAuthenticatedSubject.next(true);
   }
 
-  /**
-   * Save user to localStorage for session persistence
-   */
   private saveUserToLocalStorage(user: User): void {
     localStorage.setItem('currentUser', JSON.stringify(user));
   }
 
-  /**
-   * Store authentication token
-   */
   private storeToken(token: string): void {
     localStorage.setItem('auth_token', token);
     this.tokenSubject.next(token);
   }
 
-  /**
-   * Clear all user session data
-   */
   private clearUserSession(): void {
     localStorage.removeItem('currentUser');
     localStorage.removeItem('auth_token');
@@ -206,23 +181,14 @@ export class AuthService {
     this.tokenSubject.next(null);
   }
 
-  /**
-   * Get authentication token for API requests
-   */
   getToken(): string | null {
     return this.tokenSubject.value;
   }
 
-  /**
-   * Get current user
-   */
   getCurrentUser(): User | null {
     return this.currentUserSubject.value;
   }
 
-  /**
-   * Check if user is authenticated
-   */
   isAuthenticated(): boolean {
     return this.isAuthenticatedSubject.value;
   }

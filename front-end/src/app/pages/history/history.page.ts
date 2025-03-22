@@ -29,7 +29,6 @@ import {
     IonContent,
     IonList,
     IonItem,
-    IonLabel,
     IonBadge,
     IonCard,
     IonCardHeader,
