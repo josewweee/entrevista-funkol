@@ -3,36 +3,11 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
+import { ApiResponse, User } from '../models';
 import { parseDate } from '../utils/date-utils';
 
 // Declare Google global variable
 declare const google: any;
-
-//-------------------------------
-// Interface Definitions
-//-------------------------------
-
-/**
- * User information model
- */
-export interface User {
-  uid: string;
-  email: string;
-  googleId?: string;
-  displayName?: string;
-  photoURL?: string;
-  lastLogin: Date | string;
-  createdAt: Date | string;
-}
-
-/**
- * Standard API response format
- */
-interface ApiResponse<T> {
-  success: boolean;
-  message: string;
-  data: T;
-}
 
 @Injectable({
   providedIn: 'root',

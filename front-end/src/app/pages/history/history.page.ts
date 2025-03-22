@@ -1,7 +1,9 @@
 import { CommonModule, DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
+import { Order } from 'src/app/models';
 import { AppFooterComponent } from '../../components/app-footer/app-footer.component';
-import { Order, OrderService } from '../../services/order.service';
+import { OrderService } from '../../services/order.service';
+
 import {
   IonBadge,
   IonCard,
@@ -11,7 +13,6 @@ import {
   IonContent,
   IonHeader,
   IonItem,
-  IonLabel,
   IonList,
   IonTitle,
   IonToolbar,

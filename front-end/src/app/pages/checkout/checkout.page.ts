@@ -3,12 +3,14 @@ import { Component, OnInit } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Router, RouterLink } from '@angular/router';
+import { Product } from 'src/app/models';
 import { AppFooterComponent } from '../../components/app-footer/app-footer.component';
 import { CustomInputComponent } from '../../components/custom-input/custom-input.component';
 import { AuthService } from '../../services/auth.service';
 import { OrderService } from '../../services/order.service';
-import { Product, ProductService } from '../../services/product.service';
+import { ProductService } from '../../services/product.service';
 import { toISOString } from '../../utils/date-utils';
+
 import {
   IonButton,
   IonContent,
@@ -52,7 +54,7 @@ export class CheckoutPage implements OnInit {
     this.route.queryParams.subscribe((params) => {
       const productId = params['productId'];
       if (productId) {
-        this.productService.getProduct(+productId).subscribe((product) => {
+        this.productService.getProduct(productId).subscribe((product) => {
           this.product = product;
         });
       }
@@ -86,7 +88,7 @@ export class CheckoutPage implements OnInit {
     const orderData = {
       products: [
         {
-          productId: this.product.id.toString(),
+          productId: this.product.id,
           name: this.product.name,
           price: this.product.price,
         },

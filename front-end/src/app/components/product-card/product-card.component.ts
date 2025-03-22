@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { Router } from '@angular/router';
 import { IonCard, IonCardContent } from '@ionic/angular/standalone';
+import { Product } from '../../models';
 
 @Component({
   selector: 'app-product-card',
@@ -11,7 +12,7 @@ import { IonCard, IonCardContent } from '@ionic/angular/standalone';
   styleUrls: ['./product-card.component.scss'],
 })
 export class ProductCardComponent {
-  @Input() product: any;
+  @Input() product!: Product;
 
   constructor(private router: Router) {}
 

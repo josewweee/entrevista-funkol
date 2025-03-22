@@ -4,42 +4,27 @@ import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { AuthService } from './auth.service';
-import { Product } from './product.service';
+import { ApiResponse, Order, OrderItem } from '../models';
 import { parseDate, toISOString } from '../utils/date-utils';
-
-export interface Order {
-  id: string;
-  userId: string;
-  products: {
-    productId: string;
-    name: string;
-    price: number;
-  }[];
-  totalAmount: number;
-  createdAt: Date | string;
-  status: 'pending' | 'completed' | 'cancelled';
-}
-
-export interface OrderItem {
-  product: Product;
-}
-
-interface ApiResponse<T> {
-  success: boolean;
-  data: T;
-  count?: number;
-  message?: string;
-}
 
 @Injectable({
   providedIn: 'root',
 })
 export class OrderService {
+  //-------------------------------
+  // Service Properties
+  //-------------------------------
+
+  // API endpoint
   private apiUrl = `${environment.apiUrl}/orders`;
+
+  // Orders state
   private ordersSubject = new BehaviorSubject<Order[]>([]);
   orders$ = this.ordersSubject.asObservable();
 
-  // Fallback data for offline mode or errors
+  /**
+   * Fallback data for offline mode or errors
+   */
   private fallbackOrders: Order[] = [
     {
       id: '1001',
@@ -62,6 +47,13 @@ export class OrderService {
     this.loadUserOrders();
   }
 
+  //-------------------------------
+  // Order Management Methods
+  //-------------------------------
+
+  /**
+   * Loads all orders for the current user
+   */
   loadUserOrders(): void {
     if (!this.authService.isAuthenticated()) {
       this.ordersSubject.next([]);
@@ -96,6 +88,11 @@ export class OrderService {
       });
   }
 
+  /**
+   * Gets all orders for the current user
+   *
+   * @returns Observable of user orders
+   */
   getOrders(): Observable<Order[]> {
     // If not authenticated, return empty array
     if (!this.authService.isAuthenticated()) {
@@ -105,6 +102,12 @@ export class OrderService {
     return this.orders$;
   }
 
+  /**
+   * Gets a specific order by ID
+   *
+   * @param orderId - ID of the order to retrieve
+   * @returns Observable of the order or null if not found
+   */
   getOrder(orderId: string): Observable<Order | null> {
     if (!this.authService.isAuthenticated()) {
       return of(null);
@@ -128,6 +131,12 @@ export class OrderService {
     );
   }
 
+  /**
+   * Creates a new order
+   *
+   * @param orderData - Order data without system-generated fields
+   * @returns Observable of the created order
+   */
   createOrder(
     orderData: Omit<Order, 'id' | 'createdAt' | 'status' | 'userId'>
   ): Observable<Order> {
@@ -160,6 +169,8 @@ export class OrderService {
   /**
    * Add order to local state only
    * This is a fallback for when the backend is not available
+   *
+   * @param order - Order data without system-generated fields
    */
   addOrder(order: Omit<Order, 'id' | 'createdAt' | 'status'>): void {
     const newOrder: Order = {
@@ -173,6 +184,11 @@ export class OrderService {
     this.ordersSubject.next([...currentOrders, newOrder]);
   }
 
+  /**
+   * Generates a random order ID for local orders
+   *
+   * @returns A random order ID string
+   */
   private generateOrderId(): string {
     return Math.floor(1000 + Math.random() * 9000).toString();
   }

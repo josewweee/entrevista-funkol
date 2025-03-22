@@ -3,37 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
-
-//-------------------------------
-// Interface Definitions
-//-------------------------------
-
-/**
- * Product brand types
- */
-export type ProductBrand = 'Apple' | 'Google' | 'Samsung';
-
-/**
- * Product information model
- */
-export interface Product {
-  id: number;
-  name: string;
-  description: string;
-  price: number;
-  brand: ProductBrand;
-  imageUrl?: string;
-}
-
-/**
- * Standard API response format
- */
-interface ApiResponse<T> {
-  success: boolean;
-  data: T;
-  count?: number;
-  message?: string;
-}
+import { ApiResponse, Product, ProductBrand } from '../models';
 
 @Injectable({
   providedIn: 'root',
@@ -52,52 +22,64 @@ export class ProductService {
    */
   private fallbackProducts: Product[] = [
     {
-      id: 1,
+      id: '1',
       name: 'Apple AirPods Pro',
       description: 'Active noise cancellation for immersive sound',
       price: 199,
       brand: 'Apple',
       imageUrl: '',
+      createdAt: new Date('2023-01-01'),
+      updatedAt: new Date('2023-01-01'),
     },
     {
-      id: 2,
+      id: '2',
       name: 'Google Home Mini',
       description: 'Smart speaker with Google Assistant',
       price: 49,
       brand: 'Google',
       imageUrl: '',
+      createdAt: new Date('2023-01-01'),
+      updatedAt: new Date('2023-01-01'),
     },
     {
-      id: 3,
+      id: '3',
       name: 'Samsung Galaxy Buds Live',
       description: 'Wireless earbuds with active noise cancellation',
       price: 169,
       brand: 'Samsung',
       imageUrl: '',
+      createdAt: new Date('2023-01-01'),
+      updatedAt: new Date('2023-01-01'),
     },
     {
-      id: 4,
+      id: '4',
       name: 'Apple Watch Series 7',
       description: 'Always-on Retina display, GPS and cellular',
       price: 399,
       brand: 'Apple',
       imageUrl: '',
+      createdAt: new Date('2023-01-01'),
+      updatedAt: new Date('2023-01-01'),
     },
     {
-      id: 5,
+      id: '5',
       name: 'Apple AirTag',
       description: 'Keep track of your items in the Find My app',
       price: 29,
       brand: 'Apple',
       imageUrl: '',
+      createdAt: new Date('2023-01-01'),
+      updatedAt: new Date('2023-01-01'),
     },
     {
-      id: 6,
+      id: '6',
       name: 'Samsung SmartThings Motion Sensor',
       description: 'Detects movement in your home',
       price: 19,
       brand: 'Samsung',
       imageUrl: '',
+      createdAt: new Date('2023-01-01'),
+      updatedAt: new Date('2023-01-01'),
     },
   ];
 
@@ -153,7 +135,7 @@ export class ProductService {
    * @param id - Product ID to retrieve
    * @returns Observable of the product or undefined if not found
    */
-  getProduct(id: number): Observable<Product | undefined> {
+  getProduct(id: string): Observable<Product | undefined> {
     const url = `${this.apiUrl}/${id}`;
     return this.http.get<ApiResponse<Product>>(url).pipe(
       map((response) => response.data),

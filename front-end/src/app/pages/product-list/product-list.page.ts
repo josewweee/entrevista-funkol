@@ -3,6 +3,8 @@ import { Component, OnInit } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { AppFooterComponent } from '../../components/app-footer/app-footer.component';
 import { ProductCardComponent } from '../../components/product-card/product-card.component';
+import { Product, ProductBrand } from '../../models';
+import { ProductService } from '../../services/product.service';
 import {
   IonChip,
   IonContent,
@@ -11,12 +13,6 @@ import {
   IonTitle,
   IonToolbar,
 } from '@ionic/angular/standalone';
-
-import {
-  Product,
-  ProductBrand,
-  ProductService,
-} from '../../services/product.service';
 
 /**
  * Product List Page
