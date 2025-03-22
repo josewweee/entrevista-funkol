@@ -2,14 +2,14 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import express from 'express';
 import morgan from 'morgan';
+import swaggerUi from 'swagger-ui-express';
 import './config/firebase.config';
+import { specs } from './config/swagger.config';
 import { errorMiddleware } from './middleware/error.middleware';
 import { authRoutes } from './routes/auth.routes';
 import { orderRoutes } from './routes/order.routes';
 import { productRoutes } from './routes/product.routes';
 import { userRoutes } from './routes/user.routes';
-
-
 
 // Initialize Firebase Admin SDK
 
@@ -24,6 +24,9 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 app.use(cors());
 app.use(morgan('dev'));
+
+// Swagger Documentation
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 
 // Routes
 app.use('/api/auth', authRoutes);
@@ -42,4 +45,7 @@ app.use(errorMiddleware);
 // Start the server
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
+  console.log(
+    `Swagger documentation available at http://localhost:${PORT}/api-docs`
+  );
 });
