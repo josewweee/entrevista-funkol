@@ -93,3 +93,15 @@ ion-tab-bar {
   font-size: var(--font-size-xs);
   margin-top: 4px;
 }
+
+/* Loading spinner styling */
+.products-loading-spinner {
+  --background: rgba(255, 255, 255, 0.9);
+  --spinner-color: var(--color-primary);
+
+  .loading-wrapper {
+    border-radius: var(--card-radius);
+    box-shadow: var(--card-shadow);
+    padding: var(--spacing-md);
+  }
+}

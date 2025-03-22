@@ -12,6 +12,7 @@ import {
   IonLabel,
   IonTitle,
   IonToolbar,
+  LoadingController,
 } from '@ionic/angular/standalone';
 
 /**
@@ -50,7 +51,11 @@ export class ProductListPage implements OnInit {
   selectedBrand: ProductBrand | null = null;
   brands: ProductBrand[] = ['Apple', 'Google', 'Samsung'];
 
-  constructor(private productService: ProductService, private router: Router) {}
+  constructor(
+    private productService: ProductService,
+    private router: Router,
+    private loadingController: LoadingController
+  ) {}
 
   //-------------------------------
   // Lifecycle Hooks
@@ -86,19 +91,36 @@ export class ProductListPage implements OnInit {
    *
    * @param brand - The brand to filter by or null to clear filter
    */
-  filterByBrand(brand: ProductBrand | null) {
+  async filterByBrand(brand: ProductBrand | null) {
+    // Show loading spinner
+    const loading = await this.loadingController.create({
+      message: 'Loading products...',
+      spinner: 'circular',
+      cssClass: 'products-loading-spinner',
+    });
+    await loading.present();
+
     if (this.selectedBrand === brand) {
       // If clicking the same brand again, clear the filter
       this.selectedBrand = null;
       this.products = this.allProducts;
+      loading.dismiss();
     } else {
       this.selectedBrand = brand;
       if (brand) {
-        this.productService.getProductsByBrand(brand).subscribe((products) => {
-          this.products = products;
+        this.productService.getProductsByBrand(brand).subscribe({
+          next: (products) => {
+            this.products = products;
+            loading.dismiss();
+          },
+          error: (error) => {
+            console.error('Failed to load products:', error);
+            loading.dismiss();
+          },
         });
       } else {
         this.products = this.allProducts;
+        loading.dismiss();
       }
     }
   }

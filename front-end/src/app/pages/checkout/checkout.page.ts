@@ -51,16 +51,62 @@ export class CheckoutPage implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.route.queryParams.subscribe((params) => {
-      const productId = params['productId'];
-      if (productId) {
-        this.productService.getProduct(productId).subscribe((product) => {
-          this.product = product;
-        });
-      }
+    this.loadProductDetails();
+  }
+
+  //-------------------------------
+  // Data Loading Methods
+  //-------------------------------
+
+  /**
+   * Fetch product details for checkout
+   *
+   * Shows a loader while product data is being retrieved
+   */
+  async loadProductDetails() {
+    // Show loading spinner
+    const loading = await this.loadingController.create({
+      message: 'Loading product details...',
+      spinner: 'circular',
+      cssClass: 'checkout-loading-spinner',
+    });
+    await loading.present();
+
+    this.route.queryParams.subscribe({
+      next: (params) => {
+        const productId = params['productId'];
+        if (productId) {
+          this.productService.getProduct(productId).subscribe({
+            next: (product) => {
+              this.product = product;
+              loading.dismiss();
+            },
+            error: (error) => {
+              console.error('Failed to load product:', error);
+              this.presentToast('Failed to load product details', 'danger');
+              loading.dismiss();
+              this.router.navigate(['/product-list']);
+            },
+          });
+        } else {
+          loading.dismiss();
+          this.presentToast('No product selected', 'warning');
+          this.router.navigate(['/product-list']);
+        }
+      },
+      error: (error) => {
+        console.error('Error processing query parameters:', error);
+        loading.dismiss();
+        this.router.navigate(['/product-list']);
+      },
     });
   }
 
+  /**
+   * Process the purchase and create an order
+   *
+   * Handles both online and offline order creation
+   */
   async buyNow() {
     if (!this.product) return;
 
@@ -79,8 +125,9 @@ export class CheckoutPage implements OnInit {
 
     // Show loading indicator
     const loading = await this.loadingController.create({
-      message: 'Processing payment...',
+      message: 'Processing Payment...',
       spinner: 'circular',
+      cssClass: 'checkout-loading-spinner',
     });
     await loading.present();
 
