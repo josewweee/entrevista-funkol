@@ -50,11 +50,11 @@ export class AuthService {
    * Login with Google
    * Sends the ID token to the backend for verification
    */
-  loginWithGoogle(idToken: string): Observable<User> {
+  loginWithGoogle(idToken: string, fullName?: string): Observable<User> {
     console.log('Sending Google ID token to backend for verification');
 
     return this.http
-      .post<ApiResponse<User>>(`${this.apiUrl}/google`, { idToken })
+      .post<ApiResponse<User>>(`${this.apiUrl}/google`, { idToken, fullName })
       .pipe(
         map((response) => {
           console.log('Backend response:', response);
@@ -63,8 +63,9 @@ export class AuthService {
             throw new Error(response.message || 'Authentication failed');
           }
 
-          const user = {
+          const user: User = {
             ...response.data,
+            displayName: fullName,
             lastLogin: parseDate(response.data.lastLogin),
             createdAt: parseDate(response.data.createdAt),
           };

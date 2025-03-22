@@ -2,15 +2,10 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { IonButton, IonContent, IonSpinner } from '@ionic/angular/standalone';
 import { environment } from '../../../environments/environment';
 import { CustomInputComponent } from '../../components/custom-input/custom-input.component';
 import { AuthService } from '../../services/auth.service';
-import {
-  IonButton,
-  IonContent,
-  IonInput,
-  IonSpinner,
-} from '@ionic/angular/standalone';
 
 declare const google: any;
 
@@ -23,7 +18,6 @@ declare const google: any;
     CommonModule,
     FormsModule,
     IonContent,
-    IonInput,
     IonButton,
     IonSpinner,
     CustomInputComponent,
@@ -82,10 +76,24 @@ export class LoginPage implements OnInit {
 
     // Process the ID token
     const idToken = response.credential;
+    // Only create fullName if both firstName and lastName are available
+    const fullName =
+      this.firstName || this.lastName
+        ? this.firstName + ' ' + this.lastName
+        : undefined;
 
-    this.authService.loginWithGoogle(idToken).subscribe({
+    this.authService.loginWithGoogle(idToken, fullName).subscribe({
       next: (user) => {
         console.log('Successfully logged in with Google', user);
+
+        // Set firstName and lastName from user's displayName
+        if (user && user.displayName) {
+          const nameParts = user.displayName.split(' ');
+          this.firstName = nameParts[0] || '';
+          this.lastName =
+            nameParts.length > 1 ? nameParts.slice(1).join(' ') : '';
+        }
+
         this.router.navigate(['/product-list']);
       },
       error: (err) => {
@@ -94,18 +102,34 @@ export class LoginPage implements OnInit {
     });
   }
 
-  register() {
-    console.log('Register clicked:', this.firstName, this.lastName);
-    // Implement registration logic
+  /**
+   * Clear Google's g_state cookie which controls the cooldown period
+   */
+  private clearGoogleStateCookie() {
+    // Delete the g_state cookie that Google uses to implement cooldown
+    document.cookie = 'g_state=;path=/;expires=Thu, 01 Jan 1970 00:00:01 GMT';
   }
 
   loginWithGoogle() {
     this.isLoading = true;
-    // Trigger Google authentication prompt
+
+    // Cancel any existing prompt
+    google.accounts.id.cancel();
+
+    // Clear the Google state cookie to bypass the cooldown
+    this.clearGoogleStateCookie();
+
+    // Re-initialize to force a fresh context with updated settings
+    this.initGoogleAuth();
+
+    // Try to prompt for Google sign-in
     google.accounts.id.prompt((notification: any) => {
       if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
-        // Google Sign In notification is not displayed or was skipped
+        console.log(
+          'Google prompt was suppressed, clearing cookie and retrying'
+        );
         this.isLoading = false;
+        this.clearGoogleStateCookie();
       }
     });
   }

@@ -7,7 +7,7 @@ export const googleSignIn = async (
   next: NextFunction
 ) => {
   try {
-    const { idToken } = req.body;
+    const { idToken, fullName } = req.body;
 
     if (!idToken) {
       return res.status(400).json({
@@ -18,7 +18,7 @@ export const googleSignIn = async (
 
     console.log('Received Google Sign-In request with token');
 
-    const user = await verifyGoogleToken(idToken);
+    const user = await verifyGoogleToken(idToken, fullName);
 
     console.log('Google Sign-In successful, user:', user.uid);
 

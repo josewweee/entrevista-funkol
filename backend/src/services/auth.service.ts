@@ -13,7 +13,10 @@ import {
 const CLIENT_ID = process.env.CLIENT_ID;
 const client = new OAuth2Client(CLIENT_ID);
 
-export const verifyGoogleToken = async (idToken: string): Promise<User> => {
+export const verifyGoogleToken = async (
+  idToken: string,
+  fullName?: string
+): Promise<User> => {
   try {
     // First, verify the Google token
     const ticket = await client.verifyIdToken({
@@ -26,7 +29,7 @@ export const verifyGoogleToken = async (idToken: string): Promise<User> => {
       throw new Error('Invalid Google token payload');
     }
 
-    const { sub, email, name, picture } = payload;
+    const { sub, name, email, picture } = payload;
 
     // Use the Google user ID (sub) to check or create the user
     const googleUserId = sub; // This is the Google user ID
@@ -47,7 +50,7 @@ export const verifyGoogleToken = async (idToken: string): Promise<User> => {
     const newUser = await createUser({
       googleId: googleUserId, // Store the Google ID
       email: email || '',
-      displayName: name || '',
+      displayName: fullName || name || '',
       photoURL: picture || '',
     });
 

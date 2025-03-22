@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { AuthService } from './auth.service';
 
 import {
   HttpEvent,
@@ -11,14 +10,14 @@ import {
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
-  constructor(private authService: AuthService) {}
+  constructor() {}
 
   intercept(
     request: HttpRequest<unknown>,
     next: HttpHandler
   ): Observable<HttpEvent<unknown>> {
-    // Get the token from the auth service
-    const token = this.authService.getToken();
+    // Get the token directly from localStorage
+    const token = localStorage.getItem('auth_token');
 
     // If we have a token, add it to the request header
     if (token) {
