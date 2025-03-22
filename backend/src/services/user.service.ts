@@ -2,8 +2,19 @@ import { db } from '../config/firebase.config';
 import { User } from '../types';
 import { toISOString } from '../utils/date-utils';
 
+// Firebase collection reference
 const usersCollection = db.collection('users');
 
+//-------------------------------
+// User Retrieval Operations
+//-------------------------------
+
+/**
+ * Retrieves a user by their Firebase UID
+ *
+ * @param uid - The Firebase user ID
+ * @returns The user document or null if not found
+ */
 export const getUserById = async (uid: string): Promise<User | null> => {
   try {
     const userDoc = await usersCollection.doc(uid).get();
@@ -19,6 +30,12 @@ export const getUserById = async (uid: string): Promise<User | null> => {
   }
 };
 
+/**
+ * Retrieves a user by their Google ID
+ *
+ * @param googleId - The Google account ID
+ * @returns The user document or null if not found
+ */
 export const getUserByGoogleId = async (
   googleId: string
 ): Promise<User | null> => {
@@ -40,6 +57,16 @@ export const getUserByGoogleId = async (
   }
 };
 
+//-------------------------------
+// User Management Operations
+//-------------------------------
+
+/**
+ * Creates a new user in the database
+ *
+ * @param userData - Partial user data to create the user with
+ * @returns The newly created user document
+ */
 export const createUser = async (userData: Partial<User>): Promise<User> => {
   try {
     // Create a document with a generated ID if uid is not provided
@@ -52,7 +79,7 @@ export const createUser = async (userData: Partial<User>): Promise<User> => {
     const newUser: User = {
       uid: userData.uid,
       email: userData.email || '',
-      googleId: userData.googleId, // Include googleId if present
+      googleId: userData.googleId,
       displayName: userData.displayName || '',
       photoURL: userData.photoURL || '',
       lastLogin: toISOString(now),
@@ -67,6 +94,11 @@ export const createUser = async (userData: Partial<User>): Promise<User> => {
   }
 };
 
+/**
+ * Updates a user's last login timestamp
+ *
+ * @param uid - The Firebase user ID to update
+ */
 export const updateUserLastLogin = async (uid: string): Promise<void> => {
   try {
     await usersCollection.doc(uid).update({

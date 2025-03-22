@@ -2,7 +2,15 @@ import { Router } from 'express';
 import { getCurrentUser } from '../controllers/user.controller';
 import { authMiddleware } from '../middleware/auth.middleware';
 
+/**
+ * User API routes
+ * Base path: /api/users
+ */
 const router = Router();
+
+//-------------------------------
+// Swagger Documentation
+//-------------------------------
 
 /**
  * @swagger
@@ -29,6 +37,10 @@ const router = Router();
  *           description: URL to user's profile picture
  */
 
+//-------------------------------
+// User Profile Routes
+//-------------------------------
+
 /**
  * @swagger
  * /api/users/me:
@@ -51,4 +63,5 @@ const router = Router();
  */
 router.get('/me', authMiddleware as any, getCurrentUser as any);
 
+// Export the router
 export const userRoutes = router;

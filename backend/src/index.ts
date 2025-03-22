@@ -11,36 +11,54 @@ import { orderRoutes } from './routes/order.routes';
 import { productRoutes } from './routes/product.routes';
 import { userRoutes } from './routes/user.routes';
 
-// Initialize Firebase Admin SDK
+//-------------------------------
+// Environment Setup
+//-------------------------------
 
 // Load environment variables
 dotenv.config();
 
-// Create Express app
+// Server configuration
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Middleware
+//-------------------------------
+// Middleware Configuration
+//-------------------------------
+
+// Body parsing, CORS, and logging
 app.use(express.json());
 app.use(cors());
 app.use(morgan('dev'));
 
-// Swagger Documentation
+// API Documentation
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 
-// Routes
+//-------------------------------
+// API Routes
+//-------------------------------
+
+// API endpoints
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/orders', orderRoutes);
 
-// Default route
+// Health check endpoint
 app.get('/', (req, res) => {
   res.send('Funkol API is running!');
 });
 
-// Error middleware
+//-------------------------------
+// Error Handling
+//-------------------------------
+
+// Global error handler
 app.use(errorMiddleware);
+
+//-------------------------------
+// Server Initialization
+//-------------------------------
 
 // Start the server
 app.listen(PORT, () => {
