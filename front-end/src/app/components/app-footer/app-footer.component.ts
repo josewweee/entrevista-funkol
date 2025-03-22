@@ -20,7 +20,6 @@ import {
   IonLabel,
   IonTabBar,
   IonTabButton,
-  IonToast,
 } from '@ionic/angular/standalone';
 
 @Component({
@@ -34,14 +33,11 @@ import {
     IonTabButton,
     IonIcon,
     IonLabel,
-    IonToast,
   ],
   templateUrl: './app-footer.component.html',
   styleUrls: ['./app-footer.component.scss'],
 })
 export class AppFooterComponent implements OnInit {
-  showToast = false;
-
   constructor(private router: Router, private authService: AuthService) {
     addIcons({
       homeOutline,
@@ -64,7 +60,6 @@ export class AppFooterComponent implements OnInit {
   logout() {
     this.authService.logout().subscribe({
       next: () => {
-        this.showToast = true;
         this.router.navigate(['/login']);
       },
       error: (error) => {

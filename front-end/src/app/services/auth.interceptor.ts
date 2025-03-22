@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
 import {
+  HttpErrorResponse,
   HttpEvent,
   HttpHandler,
   HttpInterceptor,
@@ -29,6 +31,14 @@ export class AuthInterceptor implements HttpInterceptor {
     }
 
     // Pass the modified request to the next handler
-    return next.handle(request);
+    return next.handle(request).pipe(
+      catchError((error: HttpErrorResponse) => {
+        // Log the error for debugging
+        console.error(`HTTP error occurred for ${request.url}:`, error);
+
+        // Don't handle errors here - let the services handle them
+        return throwError(() => error);
+      })
+    );
   }
 }

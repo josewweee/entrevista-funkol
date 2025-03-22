@@ -1,8 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { IonButton, IonContent, IonSpinner } from '@ionic/angular/standalone';
+import { Subscription } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { CustomInputComponent } from '../../components/custom-input/custom-input.component';
 import { AuthService } from '../../services/auth.service';
@@ -23,23 +24,76 @@ declare const google: any;
     CustomInputComponent,
   ],
 })
-export class LoginPage implements OnInit {
+export class LoginPage implements OnInit, OnDestroy {
   firstName = '';
   lastName = '';
   isLoading = false;
+  isLoggedIn = false;
+  private authSubscription: Subscription | null = null;
+  private isFetchingUser = false; // Flag to prevent multiple fetches
 
   constructor(private authService: AuthService, private router: Router) {}
 
   ngOnInit() {
-    // Check if user is already authenticated
-    this.authService.isAuthenticated$.subscribe((isAuthenticated) => {
-      if (isAuthenticated) {
-        this.router.navigate(['/products']);
+    // Check authentication state immediately
+    this.checkAuthenticationState();
+
+    // Subscribe to future authentication state changes
+    // but don't trigger checkAuthenticationState again if we're already checking
+    this.authSubscription = this.authService.isAuthenticated$.subscribe(
+      (isAuthenticated) => {
+        // Update the UI state without triggering another fetch
+        this.isLoggedIn = isAuthenticated;
       }
-    });
+    );
 
     // Load Google authentication script
     this.loadGoogleAuthAPI();
+  }
+
+  ngOnDestroy() {
+    // Clean up subscription to prevent memory leaks
+    if (this.authSubscription) {
+      this.authSubscription.unsubscribe();
+    }
+  }
+
+  private checkAuthenticationState() {
+    const isAuthenticated = this.authService.isAuthenticated();
+    this.isLoggedIn = isAuthenticated;
+
+    if (isAuthenticated && !this.isFetchingUser) {
+      this.isFetchingUser = true; // Set flag to prevent multiple fetches
+
+      // Fetch the latest user data from the database
+      this.authService.fetchCurrentUser().subscribe({
+        next: (userData) => {
+          this.isFetchingUser = false; // Reset flag
+
+          if (userData && userData.displayName) {
+            const nameParts = userData.displayName.split(' ');
+            this.firstName = nameParts[0] || '';
+            this.lastName =
+              nameParts.length > 1 ? nameParts.slice(1).join(' ') : '';
+          }
+        },
+        error: (error) => {
+          console.error('Error fetching user from database:', error);
+          this.isFetchingUser = false; // Reset flag even on error
+
+          // Fallback to cached user if fetch fails
+          const cachedUser = this.authService.getCurrentUser();
+          console.log('Falling back to cached user:', cachedUser);
+
+          if (cachedUser && cachedUser.displayName) {
+            const nameParts = cachedUser.displayName.split(' ');
+            this.firstName = nameParts[0] || '';
+            this.lastName =
+              nameParts.length > 1 ? nameParts.slice(1).join(' ') : '';
+          }
+        },
+      });
+    }
   }
 
   private loadGoogleAuthAPI() {
@@ -82,20 +136,45 @@ export class LoginPage implements OnInit {
 
     this.authService.loginWithGoogle(idToken, fullName).subscribe({
       next: (user) => {
-        console.log('Successfully logged in with Google', user);
+        // Ensure we're not already fetching user data
+        if (!this.isFetchingUser) {
+          this.isFetchingUser = true;
 
-        // Set firstName and lastName from user's displayName
-        if (user && user.displayName) {
-          const nameParts = user.displayName.split(' ');
-          this.firstName = nameParts[0] || '';
-          this.lastName =
-            nameParts.length > 1 ? nameParts.slice(1).join(' ') : '';
+          // Fetch the latest user data from the database
+          this.authService.fetchCurrentUser().subscribe({
+            next: (databaseUser) => {
+              this.isFetchingUser = false;
+
+              // Set firstName and lastName from database user's displayName
+              if (databaseUser && databaseUser.displayName) {
+                const nameParts = databaseUser.displayName.split(' ');
+                this.firstName = nameParts[0] || '';
+                this.lastName =
+                  nameParts.length > 1 ? nameParts.slice(1).join(' ') : '';
+              }
+
+              // Navigate to product list page
+              this.router.navigateByUrl('/product-list', { replaceUrl: true });
+            },
+            error: (error) => {
+              console.error(
+                'Error fetching user data from database after login:',
+                error
+              );
+              this.isFetchingUser = false;
+
+              // Still navigate even if we couldn't fetch the updated user
+              this.router.navigateByUrl('/product-list', { replaceUrl: true });
+            },
+          });
+        } else {
+          // Skip fetching if already in progress and just navigate
+          this.router.navigateByUrl('/product-list', { replaceUrl: true });
         }
-
-        this.router.navigate(['/product-list']);
       },
       error: (err) => {
         console.error('Google login error:', err);
+        this.isLoading = false;
       },
     });
   }
@@ -123,5 +202,9 @@ export class LoginPage implements OnInit {
         this.clearGoogleStateCookie();
       }
     });
+  }
+
+  goToProducts() {
+    this.router.navigateByUrl('/product-list', { replaceUrl: true });
   }
 }

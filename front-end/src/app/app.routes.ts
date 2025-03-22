@@ -1,5 +1,4 @@
 import { Routes } from '@angular/router';
-import { AuthRedirectGuard } from './guards/auth-redirect.guard';
 import { AuthGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
@@ -7,7 +6,6 @@ export const routes: Routes = [
     path: 'login',
     loadComponent: () =>
       import('./pages/login/login.page').then((m) => m.LoginPage),
-    canActivate: [AuthRedirectGuard],
   },
   {
     path: 'product-list',

@@ -47,21 +47,18 @@ export class AuthService {
   }
 
   loginWithGoogle(idToken: string, fullName?: string): Observable<User> {
-    console.log('Sending Google ID token to backend for verification');
-
     return this.http
       .post<ApiResponse<User>>(`${this.apiUrl}/google`, { idToken, fullName })
       .pipe(
         map((response) => {
-          console.log('Backend response:', response);
-
           if (!response.success) {
             throw new Error(response.message || 'Authentication failed');
           }
 
           const user: User = {
             ...response.data,
-            displayName: fullName,
+            // Use displayName from database if available, otherwise use fullName from Google
+            displayName: response.data.displayName || fullName,
             lastLogin: parseDate(response.data.lastLogin),
             createdAt: parseDate(response.data.createdAt),
           };
@@ -107,11 +104,13 @@ export class AuthService {
       }),
       catchError((error) => {
         console.error('Error fetching user profile:', error);
-        // If 401, clear user and token
+
+        // Only clear session on 401 Unauthorized
         if (error.status === 401) {
           this.clearUserSession();
         }
-        return throwError(() => new Error('Failed to fetch user profile'));
+
+        return throwError(() => error);
       })
     );
   }
@@ -148,14 +147,25 @@ export class AuthService {
         user.lastLogin = new Date();
         this.setCurrentUser(user);
 
-        // Validate token by fetching current user
+        // Validate token by fetching current user - but don't block the UI
         this.fetchCurrentUser().subscribe({
-          error: () => this.clearUserSession(),
+          next: () => {},
+          error: (error) => {
+            console.error('Error validating user session:', error);
+
+            // Only clear session on 401 Unauthorized
+            if (error.status === 401) {
+              this.clearUserSession();
+            }
+          },
         });
       } catch (e) {
         console.error('Failed to parse saved session', e);
         this.clearUserSession();
       }
+    } else {
+      console.log('No saved session found');
+      this.clearUserSession();
     }
   }
 

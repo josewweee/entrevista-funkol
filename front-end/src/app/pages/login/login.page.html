@@ -6,16 +6,20 @@
       label="First name"
       placeholder="Enter first name"
       [(ngModel)]="firstName"
+      [disabled]="isLoggedIn"
     ></app-custom-input>
 
     <app-custom-input
       label="Last name"
       placeholder="Enter last name"
       [(ngModel)]="lastName"
+      [disabled]="isLoggedIn"
     ></app-custom-input>
 
     <div class="google-btn-container">
+      <!-- Show Google login button if not logged in -->
       <ion-button
+        *ngIf="!isLoggedIn"
         expand="block"
         fill="outline"
         class="google-btn"
@@ -34,6 +38,16 @@
           class="google-loader"
         ></ion-spinner>
         Continue with Google
+      </ion-button>
+
+      <!-- Show Go to Products button if already logged in -->
+      <ion-button
+        *ngIf="isLoggedIn"
+        expand="block"
+        class="products-btn"
+        (click)="goToProducts()"
+      >
+        Go to Products page
       </ion-button>
     </div>
   </div>
