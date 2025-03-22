@@ -79,6 +79,10 @@ export class CheckoutPage implements OnInit {
           this.productService.getProduct(productId).subscribe({
             next: (product) => {
               this.product = product;
+              // Preload the product image once data is available
+              if (product?.imageUrl) {
+                this.preloadImage(product.imageUrl);
+              }
               loading.dismiss();
             },
             error: (error) => {
@@ -100,6 +104,15 @@ export class CheckoutPage implements OnInit {
         this.router.navigate(['/product-list']);
       },
     });
+  }
+
+  /**
+   * Preloads an image to ensure it's cached
+   * @param imageUrl URL of the image to preload
+   */
+  preloadImage(imageUrl: string): void {
+    const img = new Image();
+    img.src = imageUrl;
   }
 
   /**
