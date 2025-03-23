@@ -32,7 +32,7 @@ export const verifyGoogleToken = async (
     const { sub, name, email, picture } = payload;
 
     // Use the Google user ID (sub) to check or create the user
-    const googleUserId = sub; // This is the Google user ID
+    const googleUserId = sub;
 
     // Check if user exists by Google ID
     const existingUser = await getUserByGoogleId(googleUserId);
@@ -47,8 +47,9 @@ export const verifyGoogleToken = async (
     }
 
     // User doesn't exist, create a new one with a generated Firebase ID
+    // Note: uid (Firebase document ID) is the primary identifier in our system
     const newUser = await createUser({
-      googleId: googleUserId, // Store the Google ID
+      googleId: googleUserId, // Store Google ID as reference
       email: email || '',
       displayName: fullName || name || '',
       photoURL: picture || '',

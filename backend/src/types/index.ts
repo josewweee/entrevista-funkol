@@ -22,9 +22,9 @@ export interface User {
  */
 export interface AuthRequest extends Request {
   user?: {
-    uid: string; // Google ID for backward compatibility
-    dbUid?: string; // Firebase UID from the database
+    uid: string; // Firebase document UID
     email: string;
+    googleId?: string; // For reference only, not used for identification
   };
 }
 

@@ -80,14 +80,15 @@ async function processToken(token: string, req: AuthRequest) {
   // Look up the user by Google ID
   const user = await getUserByGoogleId(googleId);
 
-  // Set user with Google ID for backward compatibility
-  req.user = {
-    uid: googleId,
-    email: payload.email || '',
-  };
-
-  // If user exists in database, add the database UID as well
-  if (user) {
-    req.user.dbUid = user.uid;
+  // If user doesn't exist in our system, we can't authenticate
+  if (!user) {
+    throw new Error('User not found in database');
   }
+
+  // Set user with Firebase document ID as the primary identifier
+  req.user = {
+    uid: user.uid, // Firebase document ID
+    email: payload.email || '',
+    googleId: googleId, // Store Google ID for reference
+  };
 }

@@ -7,6 +7,13 @@ import {
   getOrdersByUserId,
 } from '../services/order.service';
 
+/**
+ * Creates a new order for authenticated user
+ *
+ * @param req - Express request with authenticated user
+ * @param res - Express response object
+ * @param next - Next function
+ */
 export const createNewOrder = async (
   req: AuthRequest,
   res: Response,

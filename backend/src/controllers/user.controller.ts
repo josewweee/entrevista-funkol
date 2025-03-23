@@ -5,8 +5,7 @@ import { AuthRequest } from '../types';
 /**
  * Get the current authenticated user's profile
  *
- * Retrieves user information using either database UID or Google ID,
- * prioritizing database UID if available
+ * Retrieves user information using Firebase document UID
  *
  * @route GET /api/users/me
  * @middleware authMiddleware - Ensures request is authenticated
@@ -31,19 +30,10 @@ export const getCurrentUser = async (
       });
     }
 
-    let user = null;
+    // Get user by Firebase document ID
+    const user = await getUserById(req.user.uid);
 
-    // Prioritize database UID for lookup if available
-    if (req.user.dbUid) {
-      user = await getUserById(req.user.dbUid);
-    }
-
-    // Fall back to Google ID if database UID lookup fails or is unavailable
-    if (!user && req.user.uid) {
-      user = await getUserByGoogleId(req.user.uid);
-    }
-
-    // Return 404 if user not found in either lookup attempt
+    // Return 404 if user not found
     if (!user) {
       return res.status(404).json({
         success: false,
