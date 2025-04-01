@@ -16,4 +16,5 @@ front-end/temp
 front-end/src/environments/environment.prod.ts
 front-end/src/environments/environment.ts
 front-end/.firebase
-.cursor/*
+.cursor
+/memory

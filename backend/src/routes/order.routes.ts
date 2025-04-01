@@ -17,21 +17,27 @@ const router = Router();
  *       type: object
  *       required:
  *         - productId
- *         - quantity
+ *         - name
+ *         - price
  *       properties:
  *         productId:
  *           type: string
  *           description: ID of the product
- *         quantity:
- *           type: integer
- *           description: Quantity of the product
+ *         name:
+ *           type: string
+ *           description: Name of the product
+ *         price:
+ *           type: number
+ *           description: Price of the product
  *     Order:
  *       type: object
  *       required:
  *         - id
  *         - userId
- *         - items
- *         - total
+ *         - products
+ *         - totalAmount
+ *         - createdAt
+ *         - status
  *       properties:
  *         id:
  *           type: string
@@ -39,27 +45,27 @@ const router = Router();
  *         userId:
  *           type: string
  *           description: ID of the user who placed the order
- *         items:
+ *         products:
  *           type: array
  *           items:
  *             $ref: '#/components/schemas/OrderItem'
- *         total:
+ *         totalAmount:
  *           type: number
  *           description: Total amount of the order
- *         status:
- *           type: string
- *           description: Status of the order
- *           enum: [pending, processing, shipped, delivered]
  *         createdAt:
  *           type: string
  *           format: date-time
  *           description: Date the order was created
+ *         status:
+ *           type: string
+ *           description: Status of the order
+ *           enum: [pending, completed, cancelled]
  *     NewOrder:
  *       type: object
  *       required:
- *         - items
+ *         - products
  *       properties:
- *         items:
+ *         products:
  *           type: array
  *           items:
  *             $ref: '#/components/schemas/OrderItem'
@@ -81,7 +87,20 @@ router.use(authMiddleware as any);
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/NewOrder'
+ *             type: object
+ *             required:
+ *               - products
+ *             properties:
+ *               products:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   required:
+ *                     - productId
+ *                   properties:
+ *                     productId:
+ *                       type: string
+ *                       description: ID of the product to order
  *     responses:
  *       201:
  *         description: Order created successfully

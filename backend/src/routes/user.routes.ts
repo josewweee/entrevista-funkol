@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { getCurrentUser } from '../controllers/user.controller';
 import { authMiddleware } from '../middleware/auth.middleware';
 
+
 /**
  * User API routes
  * Base path: /api/users
@@ -19,22 +20,34 @@ const router = Router();
  *     User:
  *       type: object
  *       required:
- *         - id
+ *         - uid
  *         - email
- *         - name
+ *         - lastLogin
+ *         - createdAt
  *       properties:
- *         id:
+ *         uid:
  *           type: string
- *           description: The auto-generated ID of the user
+ *           description: The unique ID of the user
  *         email:
  *           type: string
  *           description: User email
- *         name:
+ *         googleId:
  *           type: string
- *           description: User full name
- *         picture:
+ *           description: Google ID for social login (optional)
+ *         displayName:
  *           type: string
- *           description: URL to user's profile picture
+ *           description: User display name (optional)
+ *         photoURL:
+ *           type: string
+ *           description: URL to user's profile picture (optional)
+ *         lastLogin:
+ *           type: string
+ *           format: date-time
+ *           description: Last login timestamp
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *           description: Account creation timestamp
  */
 
 //-------------------------------

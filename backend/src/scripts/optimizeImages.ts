@@ -5,9 +5,13 @@ import * as path from 'path';
 import sharp from 'sharp';
 import { db } from '../config/firebase.config';
 
-// Initialize Firebase Admin
 
-const bucket = admin.storage().bucket('entrevista-funkol.firebasestorage.app');
+
+// Initialize Firebase Admin
+// Storage bucket name from Firebase config
+const bucket = admin
+  .storage()
+  .bucket('entrevista-funkol-843ff.firebasestorage.app');
 
 // Target size for optimization
 const TARGET_SIZE = 500;

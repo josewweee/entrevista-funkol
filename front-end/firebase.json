@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "site": "entrevista-funkol",
+    "site": "entrevista-funkol-843ff",
     "public": "www",
     "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
     "rewrites": [

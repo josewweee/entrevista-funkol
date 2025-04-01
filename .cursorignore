@@ -1,8 +1,9 @@
 /node_modules
 /front-end/node_modules
+/front-end/www
+/front-end/package-lock.json
 /backend/node_modules
-backend/pnpm-lock.yaml
-front-end/package-lock.json
+/backend/pnpm-lock.yaml
 /dist
 /build
 /coverage

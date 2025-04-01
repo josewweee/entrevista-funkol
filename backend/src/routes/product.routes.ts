@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { getProduct, getProducts } from '../controllers/product.controller';
 import { authMiddleware } from '../middleware/auth.middleware';
 
+
 const router = Router();
 
 /**
@@ -13,7 +14,12 @@ const router = Router();
  *       required:
  *         - id
  *         - name
+ *         - brand
  *         - price
+ *         - description
+ *         - imageUrl
+ *         - createdAt
+ *         - updatedAt
  *       properties:
  *         id:
  *           type: string
@@ -21,21 +27,27 @@ const router = Router();
  *         name:
  *           type: string
  *           description: The name of the product
- *         price:
- *           type: number
- *           description: The price of the product
  *         brand:
  *           type: string
  *           description: The brand of the product
- *         category:
- *           type: string
- *           description: The category of the product
+ *           enum: [Google, Apple, Samsung]
+ *         price:
+ *           type: number
+ *           description: The price of the product
  *         description:
  *           type: string
  *           description: Product description
  *         imageUrl:
  *           type: string
  *           description: URL to the product image
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *           description: Date when the product was created
+ *         updatedAt:
+ *           type: string
+ *           format: date-time
+ *           description: Date when the product was last updated
  */
 
 // All order routes require authentication

@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { googleSignIn } from '../controllers/auth.controller';
 
+
 const router = Router();
 
 /**
@@ -38,14 +39,18 @@ const router = Router();
  *                 user:
  *                   type: object
  *                   properties:
- *                     id:
+ *                     uid:
  *                       type: string
- *                     name:
- *                       type: string
+ *                       description: User ID
  *                     email:
  *                       type: string
- *                     picture:
+ *                       description: User email
+ *                     displayName:
  *                       type: string
+ *                       description: User display name
+ *                     photoURL:
+ *                       type: string
+ *                       description: User profile picture URL
  *       401:
  *         description: Invalid credentials
  *       500:

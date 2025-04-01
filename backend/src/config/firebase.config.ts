@@ -2,6 +2,7 @@ import dotenv from 'dotenv';
 import * as admin from 'firebase-admin';
 import path from 'path';
 
+
 // Load environment variables - first try .env.development, then .env
 dotenv.config({ path: path.resolve(process.cwd(), '.env.development') });
 dotenv.config();
